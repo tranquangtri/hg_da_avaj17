@@ -7,7 +7,7 @@
   * [Cách tính điểm](#content/score)
  
 <a name="content"></a>
-### Nội dung đồ án
+### 1. Nội dung đồ án
   #### Game Heart (Microsoft) (giống luật chơi)
   + Hỗ trợ tối đa 04 người chơi qua mạng LAN (Internet).
   + Có chức năng cho máy đóng vai trò người chơi.
@@ -23,7 +23,7 @@
     + Các chức năng đạt được và Hướng dẫn sử dụng.
     + Phân chia công việc trong nhóm
 <a name="rule"></a>
-### Luật chơi
+### 2. Luật chơi
 <a name="content/goal"></a>
 #### Mục tiêu:
 - Ghi điểm ít nhất có thể.
@@ -39,7 +39,7 @@
 - Người chơi có thể bắt đầu nước đi tiếp theo với bất kì loại quân bài nào, trừ quân Cơ. Bạn k thể đi quân Cơ trừ phi đã có người đi quân Cơ trong nước đi trước đó. (Hay theo cách nói trong game là cho tới khi Hearts have been broken – trái tim bị vỡ).
 - Mục đích trong game là chuyển hết tất cả quân Cơ cho những người chơi khác (những người cũng đang cố gắng chuyển chúng cho bạn). Game kết thúc khi 1 người chơi đạt 100 điểm. Khi đó, người chơi có số điểm thấp nhất là người thắng cuộc.
 <a name="content/score"></a>
-#### 4. Cách tính điểm:
+#### Cách tính điểm:
 - Mỗi quân Cơ trong một nước đi được tính 1 điểm.
 - Quân Đầm Pích được tính 13 điểm.
 (nguồn: http://vietgamedev.net/forum/thread/235/clone-game-hearts-game-%C4%91%C3%A1nh-b%C3%A0i-tr%C3%AAn-windows/)
