@@ -13,7 +13,7 @@
   + Có chức năng cho máy đóng vai trò người chơi.
   + Giao diện đồ họa
   #### Thời hạn nộp bài
-  + 23:55 - 18/06/2018 
+  + 23:55 - 18/06/2018
   #### Nội dung nộp: MSSV1-MSSV2-MSSV3.zip (MSSV1 nộp)
 	+ File jar thực thi
 	+ File ant đóng gói chương trình
