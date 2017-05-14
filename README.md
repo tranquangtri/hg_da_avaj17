@@ -5,6 +5,7 @@
   * [Table](#content/table)
   * [Cách chơi](#content/howtoplay)
   * [Cách tính điểm](#content/score)
+* [Hướng dẫn biên dịch và chạy](#build)
  
 <a name="content"></a>
 ### 1. Nội dung đồ án
@@ -43,3 +44,14 @@
 - Mỗi quân Cơ trong một nước đi được tính 1 điểm.
 - Quân Đầm Pích được tính 13 điểm.
 (nguồn: http://vietgamedev.net/forum/thread/235/clone-game-hearts-game-%C4%91%C3%A1nh-b%C3%A0i-tr%C3%AAn-windows/)
+
+### 3. Hướng dẫn biên dịch và chạy
+- Cài JDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+- Cài Apache Ant (1.10.1): https://ant.apache.org/bindownload.cgi
+- Để biên dịch vào mục src:
+```
+ant compile
+```
+- Để chạy:
+```java ./exe/server/GameServer```
+
