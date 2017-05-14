@@ -8,7 +8,7 @@
  
 <a name="content"></a>
 ### 1. Nội dung đồ án
-  #### Game Heart (Microsoft) (giống luật chơi)
+  #### Game Heart (Microsoft)
   + Hỗ trợ tối đa 04 người chơi qua mạng LAN (Internet).
   + Có chức năng cho máy đóng vai trò người chơi.
   + Giao diện đồ họa
