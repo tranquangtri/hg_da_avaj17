@@ -2,6 +2,7 @@
  * Server entry
  */
 package game.server;
+
 import java.io.*;
 
 public class Main{

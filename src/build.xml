@@ -9,9 +9,16 @@
     </target>
     <target name="compile" depends="clean">
         <mkdir dir="../exe/Server"/>
-        <javac srcdir="Server" destdir="../exe/Server" encoding="UTF-8"/>
+        <javac srcdir="Server" destdir="../exe/Server" encoding="UTF-8" classpathref="build.classpath"/>
         <mkdir dir="../exe/Client"/>
         <javac srcdir="Client" destdir="../exe/Client" encoding="UTF-8" classpathref="build.classpath"/>
-
+        <mkdir dir="../exe/lib"/>
+        <copy todir="../exe/lib">
+    		<fileset dir="lib"/>
+  		</copy>
     </target>
+    <target name="run" depends="compile">
+       <java classname="game.server.Main" fork="true"></java>
+</target>
+    
 </project>
