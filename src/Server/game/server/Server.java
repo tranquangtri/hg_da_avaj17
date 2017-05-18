@@ -1,67 +1,56 @@
 package game.server;
-
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 class Server{
-    IConfiguration configuration;
-    public Server(IConfiguration configuration){
-        this.configuration = configuration;
+    private final int port;
+
+    public Server(int port){
+        this.port = port;
     }
-    public void start() throws IOException{
-        final ArrayList<Socket> sockets = new ArrayList<>();
-        final ServerSocket server = new ServerSocket(configuration.getPort());
-        int count = 0;
-        Thread threadTimeOut = new Thread(new Runnable() {
-            @Override
-            public void run() {
+
+    public void start(){
+        /* Create and open socket on specific port */
+        ServerSocket server = null;
+        try {
+            server = new ServerSocket(port);
+        }catch (IOException e){
+            System.err.println("\nCannot open and create serversocket !\n");
+            throw new RuntimeException(e);
+        }
+
+        /* Create time counting task for n seconds*/
+        Callable<Boolean> timeCount = ()-> {
                 try {
-                    Thread.sleep(3000);
+                    TimeUnit.SECONDS.sleep(20);
                 } catch (InterruptedException e) {}
-            }
-        });
-        Thread threadAccept = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    int count = 0;
-                    while (true) {
-                        Thread.sleep(1);
-                        Socket socketAccepted = server.accept();
-                        System.out.println(++count);
-                        sockets.add(socketAccepted);
-                    }
-                }
-                catch (Exception e2) {
-                    return;
-                }
-            }
-        });
-        threadAccept.start();
-        threadTimeOut.start();
-        while (threadTimeOut.isAlive() && threadAccept.isAlive()){
-        }
-        if (threadAccept.isAlive()) {
-            threadAccept.interrupt();
-        }
+                return true;
+        };
 
-        if (threadTimeOut.isAlive()){
-            threadTimeOut.interrupt();
-        }
+        /* Create cached thread pool */
+        ExecutorService services = Executors.newCachedThreadPool();
 
-        if (!threadAccept.isAlive()) {
-            System.out.println("Thread accept dead");
-        }
+        /* Start thread timeCount and acceptClients */
+        Future<Boolean> futureTimeCount = services.submit(timeCount);
+        services.execute(Run_AcceptingClients.fromServerSocket(server));
 
-        if (!threadTimeOut.isAlive()){
-            System.out.println("Thread timeout dead");
+         /* Wait until timeout and close server socket */
+        try {
+            futureTimeCount.get();
+            if (!server.isClosed())
+                server.close();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        System.out.println("Number of client: " + Integer.toString(ClientManager.getInstance().getCount()));
+        ClientManager.getInstance().sendAll("Welcome to Heart games !");
 
     }
 }
+
+
