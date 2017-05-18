@@ -37,4 +37,7 @@ final class ClientManager{
     public int getCount(){
         return clients.size();
     }
+    public String receive(int index){
+        return clients.get(index).receive();
+    }
 }

@@ -38,8 +38,8 @@ class Server{
          /* Wait until timeout and close server socket */
         try {
             futureTimeCount.get();
-            if (!server.isClosed())
-                server.close();
+            if (!server.isClosed());
+                 server.close();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {
@@ -48,8 +48,11 @@ class Server{
             throw new RuntimeException(e);
         }
         System.out.println("Number of client: " + Integer.toString(ClientManager.getInstance().getCount()));
-        ClientManager.getInstance().sendAll("Welcome to Heart games !");
-
+        ClientManager clientManager = ClientManager.getInstance();
+        clientManager.sendAll("Welcome to Heart games !");
+        for (int i =0; i < clientManager.getCount(); i++){
+            System.out.println("Client " + i + " " + clientManager.receive(i));
+        }
     }
 }
 

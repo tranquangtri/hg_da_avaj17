@@ -1,28 +1,32 @@
 package game.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 
 class RemoteClient implements IClient{
     private final Socket socket;
+    private final PrintWriter writer;
+    private final BufferedReader bufferedReader;
     public RemoteClient(Socket socket){
-        this.socket=  socket;
+        this.socket =  socket;
+        try {
+            this.writer = new PrintWriter(socket.getOutputStream());
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     public void send(String message){
-        try {
-            PrintWriter writer = new PrintWriter(socket.getOutputStream());
             writer.println(message);
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            writer.flush();
     }
-    public void close(){
+    public String receive(){
+        String ret = null;
         try {
-            socket.close();
+            ret = bufferedReader.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        return ret;
     }
 }
