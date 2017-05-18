@@ -1,4 +1,4 @@
-package game.server;
+package game.server.core;
 
 import java.util.ArrayList;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
  *  Là class singleton dùng quản lý các client
  *  Thread-safe
  * */
-final class ClientManager{
+public final class ClientManager{
     private static ClientManager clientManager = null;
     private final ArrayList<IClient> clients;
     private final static Object mutex = new Object();

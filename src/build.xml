@@ -18,7 +18,7 @@
   		</copy>
     </target>
     <target name="run" depends="compile">
-       <java classname="game.server.Main" fork="true"></java>
+       <java classname="game.server.core.Main" fork="true"></java>
 </target>
     
 </project>

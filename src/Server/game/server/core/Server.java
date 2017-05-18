@@ -1,4 +1,6 @@
-package game.server;
+package game.server.core;
+import game.server.RoutineServer;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.*;
@@ -47,11 +49,18 @@ class Server{
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Number of client: " + Integer.toString(ClientManager.getInstance().getCount()));
-        ClientManager clientManager = ClientManager.getInstance();
-        clientManager.sendAll("Welcome to Heart games !");
-        for (int i =0; i < clientManager.getCount(); i++){
-            System.out.println("Client " + i + " " + clientManager.receive(i));
+        try {
+            Object o = Class.forName("game.server.RoutineServer").newInstance();
+            if (o instanceof Runnable){
+                Runnable routine = (Runnable)o;
+                routine.run();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,7 +1,7 @@
 /**
  * Server entry
  */
-package game.server;
+package game.server.core;
 
 import java.io.*;
 

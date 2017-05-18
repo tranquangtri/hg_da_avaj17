@@ -1,6 +1,4 @@
-package game.server;
-
-import java.io.IOException;
+package game.server.core;
 
 interface IClient{
     void send(String message);

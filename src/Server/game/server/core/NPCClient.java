@@ -1,4 +1,4 @@
-package game.server;
+package game.server.core;
 
 
 class NPCClient implements IClient {
