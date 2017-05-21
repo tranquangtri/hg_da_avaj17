@@ -1,10 +1,14 @@
 package game.server.core;
-import game.server.RoutineServer;
-
+import game.server.IClientManager;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.util.concurrent.*;
 
+/**
+ * Tạo serverSocket, lắng nghe các kết nối của client và thêm vào {@link ClientManager}
+ * sau đó gọi RoutineServer để xử lý theo kịch bản gửi nhận dữ liệu
+ */
 class Server{
     private final int port;
 
@@ -35,7 +39,7 @@ class Server{
 
         /* Start thread timeCount and acceptClients */
         Future<Boolean> futureTimeCount = services.submit(timeCount);
-        services.execute(Run_AcceptingClients.fromServerSocket(server));
+        services.execute(TaskAcceptClients.fromServerSocket(server));
 
          /* Wait until timeout and close server socket */
         try {
@@ -50,7 +54,15 @@ class Server{
             throw new RuntimeException(e);
         }
         try {
-            Object o = Class.forName("game.server.RoutineServer").newInstance();
+            IClientManager clientManager = ClientManager.getInstance();
+            Object o = null;
+            try {
+                o = Class.forName("game.server.RoutineServer").getConstructor(IClientManager.class).newInstance(clientManager);
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
             if (o instanceof Runnable){
                 Runnable routine = (Runnable)o;
                 routine.run();

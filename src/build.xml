@@ -1,24 +1,13 @@
 <project>
-	<path id="build.classpath">
-        <fileset dir="lib">
-            <include name="**/*.jar" />
-        </fileset>
-    </path>
     <target name="clean">
         <delete dir="../exe" />
     </target>
     <target name="compile" depends="clean">
         <mkdir dir="../exe/Server"/>
-        <javac srcdir="Server" destdir="../exe/Server" encoding="UTF-8" classpathref="build.classpath"/>
+        <javac srcdir="Server" destdir="../exe/Server" encoding="UTF-8"/>
         <mkdir dir="../exe/Client"/>
-        <javac srcdir="Client" destdir="../exe/Client" encoding="UTF-8" classpathref="build.classpath"/>
-        <mkdir dir="../exe/lib"/>
-        <copy todir="../exe/lib">
-    		<fileset dir="lib"/>
-  		</copy>
+        <javac srcdir="Client" destdir="../exe/Client" encoding="UTF-8"/>
     </target>
-    <target name="run" depends="compile">
-       <java classname="game.server.core.Main" fork="true"></java>
-</target>
+
     
 </project>

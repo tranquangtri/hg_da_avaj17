@@ -1,9 +1,14 @@
 package game.server.core;
-
+import game.server.*;
 import java.io.*;
 import java.net.Socket;
 
-class RemoteClient implements IClient{
+/**
+ * Đại diện cho một kết nối Client đến Server
+ * <p> Thực chất là một lớp lưu giữ clientSocket và chứa các phương thức để
+ * đơn giản quá trình gửi nhận dữ liệu dùng BufferedRead, PrintWriter
+ */
+class RemoteClient implements IClient {
     private final Socket socket;
     private final PrintWriter writer;
     private final BufferedReader bufferedReader;

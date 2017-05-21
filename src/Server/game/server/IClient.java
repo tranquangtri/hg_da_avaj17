@@ -1,6 +1,6 @@
-package game.server.core;
+package game.server;
 
-interface IClient{
+public interface IClient{
     void send(String message);
     String receive();
 }

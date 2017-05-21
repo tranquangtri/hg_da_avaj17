@@ -5,15 +5,15 @@ import java.net.Socket;
 import java.net.SocketException;
 
 /* Excute accepting clients from server socket*/
-class Run_AcceptingClients implements Runnable{
+class TaskAcceptClients implements Runnable{
     private final ClientManager clientManager;
     private final ServerSocket server;
-    private Run_AcceptingClients(ServerSocket server){
+    private TaskAcceptClients(ServerSocket server){
         this.clientManager = ClientManager.getInstance();
         this.server = server;
     }
-    public static Run_AcceptingClients fromServerSocket(ServerSocket server){
-        return new Run_AcceptingClients(server);
+    public static TaskAcceptClients fromServerSocket(ServerSocket server){
+        return new TaskAcceptClients(server);
     }
     public void run(){
         try {

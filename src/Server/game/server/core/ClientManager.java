@@ -1,12 +1,19 @@
 package game.server.core;
 
+import game.server.IClient;
+import game.server.IClientManager;
+
 import java.util.ArrayList;
 
-/** ClientManager
- *  Là class singleton dùng quản lý các client
- *  Thread-safe
- * */
-public final class ClientManager{
+/**
+ * <p> Quản lý các {@link IClient}, tối đa 4
+ * <p> Chứa các phương thức send, sendall, receive để gửi nhận dữ liệu đến client
+ * <p> ở class RoutineServer lớp này được sử dụng qua interface {@link IClientManager}
+ * <p> ở class Server, lớp này sẽ được khởi tạo, phương thức add dùng để thêm các {@link IClient}
+ * từ mỗi thread, phương thức add là Thread-safe
+ * @author      Trần Quang Trí
+ */
+final class ClientManager implements IClientManager{
     private static ClientManager clientManager = null;
     private final ArrayList<IClient> clients;
     private final static Object mutex = new Object();
@@ -21,11 +28,12 @@ public final class ClientManager{
         }
         return clientManager;
     }
-    public void add(IClient client){
+    void add(IClient client){
         synchronized (clients) {
             clients.add(client);
         }
     }
+
     public void sendAll(String message){
         for (IClient client : clients){
             client.send(message);
