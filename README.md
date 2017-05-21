@@ -53,5 +53,14 @@
 ant compile
 ```
 - Để chạy:
-```java ./exe/server/GameServer```
+#### Đối với Server
+Sau khi biên dịch bằng Ant, vào thư mục exe/server
+```
+java game.server.core.Main
+```
+#### Đối với Client
+vào thư mục exe/client
+```
+java game.client.Main
+```
 
