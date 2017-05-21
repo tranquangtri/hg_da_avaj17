@@ -1,8 +1,13 @@
 <project>
-    <target name="compile">
+    <target name="clean">
+        <delete dir="../exe" />
+    </target>
+    <target name="compile" depends="clean">
         <mkdir dir="../exe/Server"/>
         <javac srcdir="Server" destdir="../exe/Server" encoding="UTF-8"/>
         <mkdir dir="../exe/Client"/>
         <javac srcdir="Client" destdir="../exe/Client" encoding="UTF-8"/>
     </target>
+
+    
 </project>
