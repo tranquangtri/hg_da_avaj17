@@ -1,5 +1,4 @@
 package game.server;
-
 public interface IClientManager{
     public void sendAll(String message);
 

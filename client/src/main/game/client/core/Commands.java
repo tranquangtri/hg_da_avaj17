@@ -1,4 +1,4 @@
-package game.client;
+package game.client.core;
 
 class Commands {
     public enum Mode{Console, Gui};

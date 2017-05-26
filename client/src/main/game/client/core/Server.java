@@ -1,4 +1,4 @@
-package game.client;
+package game.client.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
