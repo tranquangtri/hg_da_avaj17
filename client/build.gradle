@@ -5,10 +5,11 @@ sourceCompatibility = 1.8
 
 sourceSets.main.java.srcDirs = [ "src/main" ]
 sourceSets.test.java.srcDirs = [ "src/test" ]
+sourceSets.main.resources.srcDirs = [ "src/main/resources" ]
 jar {
     manifest {
         attributes("Implementation-Title": "Gradle",
                    "Implementation-Version": version,
-                   "Main-Class": "game.client.core.Main")
+                   "Main-Class": "game.client.core.GUI_StartGameScreen")
     }
 }

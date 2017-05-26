@@ -28,6 +28,7 @@ project(":client") {
     apply plugin: "java"
     dependencies {
   		testCompile 'junit:junit:4.12'
+  		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
 }
 }
 
@@ -35,6 +36,7 @@ project(":server") {
     apply plugin: "java"
     dependencies {
   		testCompile 'junit:junit:4.12'
+  		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
 }
 }
 

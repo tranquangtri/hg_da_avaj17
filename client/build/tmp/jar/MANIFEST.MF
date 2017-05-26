@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Implementation-Title: Gradle
 Implementation-Version: 1.0
-Main-Class: game.client.core.Main
+Main-Class: game.client.core.GUI_StartGameScreen
 
