@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        jcenter()
+    }
+    dependencies {
+
+    }
+}
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = '1.0'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+    
+}
+
+project(":client") {
+    apply plugin: "java"
+    dependencies {
+  		testCompile 'junit:junit:4.12'
+}
+}
+
+project(":server") {
+    apply plugin: "java"
+    dependencies {
+  		testCompile 'junit:junit:4.12'
+}
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}
