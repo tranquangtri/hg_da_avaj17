@@ -1,3 +1,4 @@
+
 ### Mục lục
 * [Nội dung đồ án](#content)
 * [Luật chơi](#rule)
@@ -46,9 +47,43 @@
 (nguồn: http://vietgamedev.net/forum/thread/235/clone-game-hearts-game-%C4%91%C3%A1nh-b%C3%A0i-tr%C3%AAn-windows/)
 
 ### 3. Hướng dẫn biên dịch và chạy
-- Cài JDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-- Cài Gradle (3.5): https://gradle.org/releases
-- Để biên dịch"
+#### 3.0 Yêu cầu
+- JDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+#### 3.1 Command line
+- Để biên dịch, mở terminal/cmd tại thư mục project, nhập
 ```
-gradle build
+gradlew build --parallel --daemon
 ```
+- Để chạy server (jar - window only)
+	+ vào batfile_test chạy runserver.bat
+- Để chạy client (jar - window only)
+	+ vào batfile_test chạy run4client.bat
+- Để chạy server
+```
+gradlew :server:run 
+```
+- Để chạy client
+```
+gradlew :client:run 
+```
+- 
+#### 3.2 Với Netbeans
+- Cài Plugin Gradle Support:
+ 	+ Tool - Plugin - Avaiable Plugins -> Tìm "Gradle" -> Install
+- Import Project:
+ 	+ File - Open project -> Tìm đến đường dẫn của Project
+- Run/Debug
+ 	+ Click subproject - right click on each project to run/debug
+#### 3.3 Với Eclipse
+- Không cần cài Plugin
+- Import Project:
+ 	+ File - Import -> Gradle -> Gradle Wrapper (default)
+- Run/Debug
+ 	+ Click client/server project -> run-run
+#### 3.4 Với Intellj IDEA
+- Không cần cài Plugin
+- Import Project:
+ 	+ Import Project (Đóng project hiện tại nếu còn mở) - Gradle -> Gradle Wrapper (default)
+- Run/Debug
+ 	+ Edit configuration -> Chọn module, main class
+
