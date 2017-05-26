@@ -47,11 +47,10 @@
 
 ### 3. Hướng dẫn biên dịch và chạy
 - Cài JDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
-- Cài Apache Ant (1.10.1): https://ant.apache.org/bindownload.cgi
-- Để biên dịch vào mục src:
+- Cài Gradle (3.5): https://gradle.org/releases
+- Để biên dịch"
 ```
-ant compile
+gradle build
 ```
-- Để chạy:
-```java ./exe/server/GameServer```
+
 
