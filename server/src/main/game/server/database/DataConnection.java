@@ -32,8 +32,8 @@ public class DataConnection {
         Properties properties = new Properties();
         
         try {
-            URL url = DataConnection.class.getClass().getResource("/config/info.properties");
-            properties.load(new FileReader(url.getFile()));
+            InputStream inputStream = DataConnection.class.getClass().getResourceAsStream("/config/info.properties");
+            properties.load(inputStream);
             URL  = properties.getProperty("url");
             USER = properties.getProperty("user");
             PASS = properties.getProperty("password");
