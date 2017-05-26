@@ -1,11 +1,21 @@
-apply plugin: "java"
-
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/main" ]
-sourceSets.test.java.srcDirs = [ "src/test" ]
-sourceSets.main.resources.srcDirs = [ "src/main/resources" ]
+sourceSets {
+    main {
+        java {
+            srcDir "src/main"
+        }
+        resources {
+          srcDir "src/resources"
+        }
+    }
+    test {
+        java {
+            srcDir "src/test"
+        } 
+    }
+}
 jar {
     manifest {
         attributes("Implementation-Title": "Gradle",

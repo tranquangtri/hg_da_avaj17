@@ -26,18 +26,22 @@ allprojects {
 
 project(":client") {
     apply plugin: "java"
+    apply plugin: 'application'
+	mainClassName = "game.client.core.GUI_StartGameScreen"	
     dependencies {
   		testCompile 'junit:junit:4.12'
   		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
-}
+	}
 }
 
 project(":server") {
     apply plugin: "java"
+    apply plugin: 'application'
+	mainClassName = "game.server.core.Main"
     dependencies {
   		testCompile 'junit:junit:4.12'
   		compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
-}
+	}
 }
 
 tasks.eclipse.doLast {
