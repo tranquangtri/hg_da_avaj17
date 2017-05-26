@@ -58,9 +58,6 @@ gradlew build --parallel --daemon
 	+ vào batfile_test chạy runserver.bat
 - Để chạy client (jar - window only)
 	+ vào batfile_test chạy run4client.bat
-```
-gradlew :client:run 
-```
 - Để chạy server
 ```
 gradlew :server:run 
