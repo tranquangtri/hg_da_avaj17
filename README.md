@@ -52,5 +52,3 @@
 ```
 gradle build
 ```
-
-
