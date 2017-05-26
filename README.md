@@ -54,14 +54,22 @@
 ```
 gradlew build --parallel --daemon
 ```
+- Để chạy server (jar - window only)
+	+ vào batfile_test chạy runserver.bat
+- Để chạy client (jar - window only)
+	+ vào batfile_test chạy run4client.bat
+```
+gradlew :client:run 
+```
 - Để chạy server
 ```
 gradlew :server:run 
 ```
-- Để chạy server
+- Để chạy client
 ```
 gradlew :client:run 
 ```
+- 
 #### 3.2 Với Netbeans
 - Cài Plugin Gradle Support:
  	+ Tool - Plugin - Avaiable Plugins -> Tìm "Gradle" -> Install
