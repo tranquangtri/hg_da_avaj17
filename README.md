@@ -87,3 +87,9 @@ gradlew :client:run
 - Run/Debug
  	+ Edit configuration -> Chọn module, main class
 
+### 4. Setup Test Database
+- Các bước tạo nhanh một database để test chương trình:
+	1. Cài Mysqlserver (nếu chưa cài) hoặc cài Xamp (dành cho windows)
+	2. Mở file "buildgradle_flyway_pass.txt" điền username, password (dòng đầu là username, dòng sau là password) mặc định root không có mật khẩu nên dòng hai để trống.
+	3. Mở terminal/cmd ```  gradlew flywayMigrate -i ```
+- Một database test sẽ tự động được tạo.
