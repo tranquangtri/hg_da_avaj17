@@ -46,6 +46,7 @@
 - Quân Đầm Pích được tính 13 điểm.
 (nguồn: http://vietgamedev.net/forum/thread/235/clone-game-hearts-game-%C4%91%C3%A1nh-b%C3%A0i-tr%C3%AAn-windows/)
 
+
 ### 3. Hướng dẫn biên dịch và chạy
 #### 3.0 Yêu cầu
 - JDK 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
@@ -93,3 +94,4 @@ gradlew :client:run
 	2. Mở file "buildgradle_flyway_pass.txt" điền username, password (dòng đầu là username, dòng sau là password) mặc định root không có mật khẩu nên dòng hai để trống.
 	3. Mở terminal/cmd ```  gradlew flywayMigrate -i ```
 - Một database test sẽ tự động được tạo.
+- vào server/src/resources/config/info.properties để điền username, password của mysql server để game server kết nối tới (cái trên là điền username, password cũng của mysql nhưng để  flyway tạo database)
