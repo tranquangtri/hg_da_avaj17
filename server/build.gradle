@@ -1,7 +1,6 @@
 sourceCompatibility = 1.8
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-
 sourceSets {
     main {
         java {
@@ -16,6 +15,16 @@ sourceSets {
             srcDir "src/test"
         }
     }
+}
+flyway {
+    url = 'jdbc:mysql://localhost:3306'
+    BufferedReader br = new BufferedReader(new FileReader('buildgradle_flyway_pass.txt'))
+    user = br.readLine()
+    password = br.readLine()
+    br.close()
+    schemas = ['1412578_1412591_1412550_user']
+    locations = ['classpath:db/migration']
+    baselineOnMigrate = true
 }
 jar {
     manifest {

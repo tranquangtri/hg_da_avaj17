@@ -4,15 +4,19 @@ buildscript {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/"}
     }
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
+        classpath "gradle.plugin.com.boxfuse.client:flyway-release:4.2.0"
     }
 }
+
+
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
-
     version = '1.0'
 
     repositories {
@@ -29,12 +33,13 @@ project(":client") {
     apply plugin: 'application'
 	mainClassName = "game.client.core.GUI_StartGameScreen"	
     dependencies {
-  		testCompile 'junit:junit:4.12'  	
+  		testCompile 'junit:junit:4.12'
 	}
 }
 
 project(":server") {
     apply plugin: "java"
+    apply plugin: "org.flywaydb.flyway"
     apply plugin: 'application'
     apply plugin: "com.github.johnrengelman.shadow"
 	mainClassName = "game.server.core.Main"
