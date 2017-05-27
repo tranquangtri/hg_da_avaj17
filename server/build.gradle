@@ -18,10 +18,8 @@ sourceSets {
 }
 flyway {
     url = 'jdbc:mysql://localhost:3306'
-    BufferedReader br = new BufferedReader(new FileReader('buildgradle_flyway_pass.txt'))
-    user = br.readLine()
-    password = br.readLine()
-    br.close()
+    user = 'root'
+    password = 'root'
     schemas = ['1412578_1412591_1412550_user']
     locations = ['classpath:db/migration']
     baselineOnMigrate = true
