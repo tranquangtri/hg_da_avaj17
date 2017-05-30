@@ -5,85 +5,108 @@
  */
 package game.client.core;
 
+import game.client.entity.Card;
 import game.client.entity.Cards;
 import game.client.entity.User;
-import java.util.Scanner;
+
 
 
 public class Solve {
     private User user = null;
-    private static final Scanner scanf = new Scanner(System.in);
+    private Cards cards = null;
+    private Cards cardsExchange = null;
+    private boolean isExchangeCard; // kiem tra xem server co yeu cau client gui bai de trao doi khong
     
     public Solve() {
         this.user = new User();
+        this.isExchangeCard = false;
     }
     
     public User getUser() {
         return this.user;
     }
     
+    public Cards getCards() {
+        return this.cards;
+    }
+    
+    public boolean getIsExchangeCard() {
+        return this.isExchangeCard;
+    }
+    
+    public Cards getCardExchange() {
+        return this.cardsExchange;
+    }
+    
+    
+    
     public void setUser(User usr) {
         this.user = usr;
     }
     
+    public void setCards(Cards cards) {
+        this.cards = cards;
+    }
     
-    public void getInfoOfUserFromServer(String dataReceived) {
+    public void setIsExchangeCard(boolean yesNo) {
+        this.isExchangeCard = yesNo;
+    }
+    
+    public void setCardExchange(Cards cardsExchange) {
+        this.cardsExchange = cardsExchange;
+    }
+    
+    public Card getCard(int index) {
+        return this.cards.getCards().get(index);
+    }
+    
+    
+    
+    public void getInforOfUser(String dataReceived) {
          String[] str = dataReceived.split("-")[0].split(" ");
          this.user.setUserName(str[0]);
          this.user.setwinMathces(Integer.parseInt(str[1]));
          this.user.setMatches(Integer.parseInt(str[2]));
     }
     
+    public boolean receivedCardFromServer(String dataReceived) {
+        this.cards = new Cards(dataReceived.split("-")[1]);
+        if (dataReceived.contains("Card3")) {
+            this.isExchangeCard = true;
+            this.cardsExchange = new Cards(null);
+        }
+        return !this.cards.getCards().isEmpty();
+    }
     
-    private String choose3CardsToExchange(Cards cards) {
-        String data = "";
-        System.out.println("Choose 3 cards to exchange:");
+    public String exchnageCard() {
+        String data = "SttPlay3Cards-";
         
         for (int i = 0; i < 3; ++i) {
-            int index = scanf.nextInt();
-            data += Integer.toString(cards.getCards().get(index).getValue()) + " " + 
-                    Integer.toString(cards.getCards().get(index).getType());
+            data += this.cardsExchange.getCards().get(i).getValue() + " " +
+                    this.cardsExchange.getCards().get(i).getType();
             if (i != 2)
                 data += " ";
         }
         
-        return "3Cards-" + data;
-    } // Chon 3 la bai de trao doi
+        return data;
+    }
     
-    // Server se quyet dinh client co duoc chon 3 la bai de trao doi hay khong thong qua message duoc gui tu server den
-    // Ham nay se phan tich xem server co yeu cau client chon bai de trao doi khong
+    public void sortCard(int  index) {
+        int N = this.cards.getCards().size() - 1;
+        for (int i = index; i < N; ++i)
+            this.cards.getCards().set(i, this.cards.getCards().get(i + 1));
+        this.cards.delete(N);
+    }
     
-    private String exchangeCardsOrStartGame(String dataReceived, Cards cards) {
-        if (dataReceived.contains("Card3"))
-            return "SttPlay" + choose3CardsToExchange(cards);
-        return "SttPlay";
-    } 
+    public void receiveSTTPlayAndExchangeCardIfHaving(String dataReceived) {
+        String[] data = dataReceived.split("-");
+        if (data.length == 4) {
+            String[] dat = data[3].split(" ");
+            
+            for (int i = 0; i < dat.length; ++i) 
+                this.cards.add(Integer.parseInt(dat[i]), Integer.parseInt(dat[++i]));
+        }
+        this.user.setSttPlay(Integer.parseInt(data[1]));
+    }
     
-    
-    
-    
-    public String solvingForClient(int step, String dataFromForm, String dataReceived, Cards cards) {
-         switch (step) {
-             case -2: { // Gui thong tin len server thong bao  username moi sau khi ten cu bi trung
-                 return "Username again-" + dataFromForm;
-             }
-             case -1: { // Gui thong tin len server thong bao username de dang nhap la ten gi
-                 return "Username-" + dataFromForm;
-             }
-             case 0: { // Gui yeu cau len server thong bao accept de bat dau choi game
-                 return "Accept";
-             }
-             case 1: { // Gui yeu cau len server yeu cau chi bai
-                 return "Devide card";
-             }
-             case 2: { // Gui thong tin len server de thong bao trao doi hoac khong trao doi
-                 cards = new Cards(dataReceived.split("-")[1]);
-                 return exchangeCardsOrStartGame(dataReceived, cards);
-             }
-             case 4: {
-                 return "Done";
-             }
-         }
-         return "DM";
-     }
 }

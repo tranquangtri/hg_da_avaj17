@@ -89,7 +89,6 @@ public class Solve {
             }
             case 4: { // Lan 4: khong doi bai, set bien exchangeCardTime = 0
                 this.exchangeCardTime = 0;
-                return;
             }
         }
     } // Trao doi bai
@@ -110,7 +109,10 @@ public class Solve {
             for (int i = 0; i != this.users.size();) {
                 if (startIndex == this.users.size())
                     startIndex = 0;
-                this.users.get(startIndex++).setSttPlay(i++);
+                try {
+                    this.users.get(startIndex++).setSttPlay(i++);
+                }
+                catch (Exception ex) {break;}
             }
         }
         
@@ -128,11 +130,13 @@ public class Solve {
     
     
     private String login(String userName) {
-        User user = DataConnection.getUserIfHaving(userName);
+        DataConnection con = new DataConnection();
+        User user = con.getUserIfHaving(userName);
         String dataSendClient = "";
         
         if (user.isEmptyUser()) {
-            if (DataConnection.insert(userName, 0, 0) == false) // tao user moi nhung user do da co nguoi tao
+            if (con.insert(userName, 0, 0) != false) {} // tao user moi nhung user do da co nguoi ta
+            else 
                 return "Duplicate username";
             user = new User(userName, 0, 0, 0);
         } 
@@ -149,10 +153,10 @@ public class Solve {
     private String createCard() {
         if (flag == 0) {
             Cards cards = new Cards(); // tao bo bai ./.
-            cards.setCards(Cards.shuffleCards(cards.getCards())); // xao bai
+            cards.setCards(cards.shuffleCards(cards.getCards())); // xao bai
             
-            this.card_13 = Cards.divideCards(cards.getCards()); // chia bai thanh 4 bo moi bo 13 la
-            this.sortSTTPlay(Cards.find3Blanges(card_13)); // Sap xep thu tu choi ban dau
+            this.card_13 = cards.divideCards(cards.getCards()); // chia bai thanh 4 bo moi bo 13 la
+            this.sortSTTPlay(cards.find3Blanges(card_13)); // Sap xep thu tu choi ban dau
             flag = 1;
         }
         return "Waiting to devide card";
@@ -191,10 +195,20 @@ public class Solve {
             this.sortSTTPlay(this.find3BlangesInExchangeCardIfHaving());
             flag = 2;
         }
+        
+        String result = "";
+        int sttPlay = this.users.get(indexOfClient).getSttPlay();
+        
         if (!this.exchnageCard.isEmpty()) {
-            return "STTPlay-" + this.users.get(indexOfClient).getSttPlay() + "-" + this.exchnageCard.get(indexOfClient);
+            result = "STTPlay-" + sttPlay + "-" + this.exchnageCard.get(indexOfClient);
         }
-        return "STTPlay-" + this.users.get(indexOfClient).getSttPlay();
+        else
+            result = "STTPlay-" + sttPlay;
+        
+        if (sttPlay == 0)
+            result += "-start";
+        
+        return result;
     }
     
     

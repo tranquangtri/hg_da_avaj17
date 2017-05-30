@@ -1,11 +1,12 @@
 package game.client.core;
 
-import game.client.entity.Cards;
+import game.client.entity.Card;
 
 import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import javax.swing.*;
-import java.awt.Dimension;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 class Command_Hello implements ICommand{
@@ -30,38 +31,115 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private static String dataFromServer; 
     private static Server server;
     private static Solve solve;
-    private static Cards cards;
     private static int step;
     private static Commands commands;
-    private boolean isAccept;
+    private static int isAccept;
     
-    private ArrayList<JLabel> cardInScreen = null;
+    private static ArrayList<JLabel> cardsPlayingScreen = null;
+    private static ArrayList<JLabel> cardsPlayedScreen = null;
+    
+    private int g = 0;
    
     public GUI_StartGameScreen() {
         initComponents();
         
+        this.settingPlayedCard();
+        this.settingPlayingCard();
+        
         // Set thong tin ban dau cho giao dien ./.
         
-        this.isAccept = false;
+        GUI_StartGameScreen.isAccept = 0;
         
-        this.txt_Username.setVisible(false);
-        this.label_Username_Login.setVisible(false);
-        this.button_Login.setVisible(false);
+        GUI_StartGameScreen.txt_Username.setVisible(false);
+        GUI_StartGameScreen.label_Username_Login.setVisible(false);
+        GUI_StartGameScreen.button_Login.setVisible(false);
         
         // Set thong tin ban dau cho xu li
         
-        this.solve = new Solve();
-        this.cards = null;
-        this.dataFromServer = "";
+        GUI_StartGameScreen.solve = new Solve();
+        GUI_StartGameScreen.dataFromServer = "";
     }
     
-    private void generalSolving(String dataInput) {
-        server.send(solve.solvingForClient(step, dataInput, dataFromServer, cards));
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////           CAC HAM VIET THEM DE HO TRO XU LI SU KIEN           ////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    
+    
+    private void settingPlayingCard() {
+        cardsPlayingScreen = new ArrayList<>();
+        
+        cardsPlayingScreen.add(label_Card1);
+        cardsPlayingScreen.add(label_Card2);cardsPlayingScreen.add(label_Card3);cardsPlayingScreen.add(label_Card4);
+        cardsPlayingScreen.add(label_Card5);cardsPlayingScreen.add(label_Card6);cardsPlayingScreen.add(label_Card7);
+        cardsPlayingScreen.add(label_Card8);cardsPlayingScreen.add(label_Card9);cardsPlayingScreen.add(label_Card10);
+        cardsPlayingScreen.add(label_Card11);cardsPlayingScreen.add(label_Card12);cardsPlayingScreen.add(label_Card13);
+       
+        
+        for (int i = 0; i < cardsPlayingScreen.size(); ++i) {
+            cardsPlayingScreen.get(i).addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    
+                    if (step == 2 && solve.getCardExchange().getCards().size() != 3) {
+                        int index = findingIndexLabelInArray((JLabel)e.getSource());
+                        Card card = solve.getCard(index);
+                        solve.getCardExchange().getCards().add(card);
+                        cardsPlayedScreen.get(g++).setIcon(new ImageIcon(getClass().getResource(imagePath(card.getValue(), card.getType()))));
+
+                        //sap xep lai bai
+                        sortCard(index);
+                        solve.sortCard(index);
+                    }
+                }
+
+            });
+        }
+    }
+    
+    private void settingPlayedCard() {
+        cardsPlayedScreen = new ArrayList<>();
+        cardsPlayedScreen.add(label_Card14);cardsPlayedScreen.add(label_Card15);
+        cardsPlayedScreen.add(label_Card16);cardsPlayedScreen.add(label_Card17);
+        
+        
+    }
+    
+    private static void receiveDataAndAnalysis() { // Nhan du lieu tu server va phan tich xem yeu cau cua server la gi
         dataFromServer = server.receive();
         commands.excute(new Command_Hello(dataFromServer));
-        step = DataReceivedAnalysis.resultAfterAnalysis(dataFromServer);
+        step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
+        System.out.println(step);
+    }
+    
+    private String imagePath(int value, int type) {
+        return  "/Images/" + value + type + ".png";
     }
 
+    private void receiveCardAndShowScreen() {
+        for (int i = 0; i < solve.getCards().getCards().size(); ++i) {
+            String imagePath = this.imagePath(solve.getCards().getCards().get(i).getValue(), 
+                                              solve.getCards().getCards().get(i).getType());
+            cardsPlayingScreen.get(i).setIcon(new ImageIcon(getClass().getResource(imagePath)));
+        }
+    }
+    
+    private int findingIndexLabelInArray(JLabel label) {
+        for (int i = 0; i < cardsPlayingScreen.size(); ++i)
+            if (cardsPlayingScreen.get(i).equals(label))
+                return i;
+        return -1;
+    }
+    
+    private void sortCard(int index) {
+        int N = cardsPlayingScreen.size() - 1;
+        for (int i = index; i < N; ++i)
+            cardsPlayingScreen.get(i).setIcon(cardsPlayingScreen.get(i + 1).getIcon());
+        cardsPlayingScreen.get(N).setIcon(null);
+        cardsPlayingScreen.get(N).setEnabled(false);
+    }
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -80,7 +158,26 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         button_Done = new javax.swing.JButton();
         label_Background_Info = new javax.swing.JLabel();
         playForm = new javax.swing.JFrame();
-        label_Card = new javax.swing.JLabel();
+        label_sttPlay = new javax.swing.JLabel();
+        label_Introdution = new javax.swing.JLabel();
+        label_Score = new javax.swing.JLabel();
+        label_Card1 = new javax.swing.JLabel();
+        label_Card2 = new javax.swing.JLabel();
+        label_Card3 = new javax.swing.JLabel();
+        label_Card4 = new javax.swing.JLabel();
+        label_Card5 = new javax.swing.JLabel();
+        label_Card6 = new javax.swing.JLabel();
+        label_Card7 = new javax.swing.JLabel();
+        label_Card8 = new javax.swing.JLabel();
+        label_Card9 = new javax.swing.JLabel();
+        label_Card10 = new javax.swing.JLabel();
+        label_Card11 = new javax.swing.JLabel();
+        label_Card12 = new javax.swing.JLabel();
+        label_Card13 = new javax.swing.JLabel();
+        label_Card14 = new javax.swing.JLabel();
+        label_Card15 = new javax.swing.JLabel();
+        label_Card16 = new javax.swing.JLabel();
+        label_Card17 = new javax.swing.JLabel();
         button_Accept_Next = new javax.swing.JButton();
         button_Exit = new javax.swing.JButton();
         label_Background_Play = new javax.swing.JLabel();
@@ -103,7 +200,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         label_Message.setForeground(new java.awt.Color(255, 255, 0));
         label_Message.setText("Connecting server.....");
         loginForm.getContentPane().add(label_Message);
-        label_Message.setBounds(150, 200, 220, 15);
+        label_Message.setBounds(140, 200, 200, 15);
 
         button_Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/login_button.png"))); // NOI18N
         button_Login.setBorderPainted(false);
@@ -177,9 +274,88 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         playForm.setMinimumSize(new java.awt.Dimension(700, 700));
         playForm.getContentPane().setLayout(null);
 
-        label_Card.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/101.png"))); // NOI18N
-        playForm.getContentPane().add(label_Card);
-        label_Card.setBounds(80, 514, 100, 140);
+        label_sttPlay.setFont(new java.awt.Font("Tahoma", 2, 80)); // NOI18N
+        label_sttPlay.setForeground(new java.awt.Color(255, 255, 0));
+        playForm.getContentPane().add(label_sttPlay);
+        label_sttPlay.setBounds(590, 170, 60, 90);
+
+        label_Introdution.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        label_Introdution.setForeground(new java.awt.Color(255, 255, 0));
+        label_Introdution.setText("Click \"Accept\" to start game");
+        playForm.getContentPane().add(label_Introdution);
+        label_Introdution.setBounds(480, 470, 210, 17);
+
+        label_Score.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        label_Score.setForeground(new java.awt.Color(255, 255, 0));
+        label_Score.setText("SCORE: 0");
+        playForm.getContentPane().add(label_Score);
+        label_Score.setBounds(50, 110, 150, 30);
+
+        label_Card1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card1);
+        label_Card1.setBounds(520, 510, 110, 140);
+
+        label_Card2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card2);
+        label_Card2.setBounds(480, 510, 150, 140);
+
+        label_Card3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card3);
+        label_Card3.setBounds(440, 510, 150, 140);
+
+        label_Card4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card4);
+        label_Card4.setBounds(400, 510, 150, 140);
+
+        label_Card5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card5);
+        label_Card5.setBounds(360, 510, 150, 140);
+
+        label_Card6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card6);
+        label_Card6.setBounds(320, 510, 150, 140);
+
+        label_Card7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card7);
+        label_Card7.setBounds(280, 510, 150, 140);
+
+        label_Card8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card8);
+        label_Card8.setBounds(240, 510, 150, 140);
+
+        label_Card9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card9);
+        label_Card9.setBounds(200, 510, 150, 140);
+
+        label_Card10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card10);
+        label_Card10.setBounds(160, 510, 150, 140);
+
+        label_Card11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card11);
+        label_Card11.setBounds(120, 510, 150, 140);
+
+        label_Card12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card12);
+        label_Card12.setBounds(80, 510, 150, 140);
+
+        label_Card13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
+        playForm.getContentPane().add(label_Card13);
+        label_Card13.setBounds(50, 510, 150, 140);
+
+        label_Card14.setMaximumSize(new java.awt.Dimension(100, 140));
+        label_Card14.setMinimumSize(new java.awt.Dimension(100, 140));
+        label_Card14.setPreferredSize(new java.awt.Dimension(100, 140));
+        playForm.getContentPane().add(label_Card14);
+        label_Card14.setBounds(50, 250, 100, 140);
+
+        label_Card15.setMaximumSize(new java.awt.Dimension(100, 140));
+        playForm.getContentPane().add(label_Card15);
+        label_Card15.setBounds(160, 250, 100, 140);
+        playForm.getContentPane().add(label_Card16);
+        label_Card16.setBounds(270, 250, 100, 140);
+        playForm.getContentPane().add(label_Card17);
+        label_Card17.setBounds(390, 250, 100, 140);
 
         button_Accept_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/accept_button.png"))); // NOI18N
         button_Accept_Next.setBorderPainted(false);
@@ -198,7 +374,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             }
         });
         playForm.getContentPane().add(button_Accept_Next);
-        button_Accept_Next.setBounds(530, 530, 140, 60);
+        button_Accept_Next.setBounds(530, 310, 140, 60);
 
         button_Exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/exit_button.png"))); // NOI18N
         button_Exit.setBorderPainted(false);
@@ -212,7 +388,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             }
         });
         playForm.getContentPane().add(button_Exit);
-        button_Exit.setBounds(530, 600, 140, 60);
+        button_Exit.setBounds(530, 380, 140, 60);
 
         label_Background_Play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/background_playgame.jpg"))); // NOI18N
         playForm.getContentPane().add(label_Background_Play);
@@ -272,69 +448,123 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     
     
     private void button_LoginMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_LoginMouseEntered
-       this.button_Login.setIcon(new ImageIcon(getClass().getResource("/Images/login_button_hover.png")));
+       GUI_StartGameScreen.button_Login.setIcon(new ImageIcon(getClass().getResource("/Images/login_button_hover.png")));
     }//GEN-LAST:event_button_LoginMouseEntered
 
     private void button_LoginMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_LoginMouseExited
-        this.button_Login.setIcon(new ImageIcon(getClass().getResource("/Images/login_button.png")));
+        GUI_StartGameScreen.button_Login.setIcon(new ImageIcon(getClass().getResource("/Images/login_button.png")));
     }//GEN-LAST:event_button_LoginMouseExited
 
     private void button_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_LoginActionPerformed
-        while (true) {
-            this.generalSolving(this.txt_Username.getText());
-            
-            if (this.step == -2) {
-                this.label_Message.setText("Username is duplicate. Try new name");
-                this.label_Message.setVisible(true);
-            }
-            else if (this.step == 0) {
+        
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                if (GUI_StartGameScreen.txt_Username.getText().equals("")) {
+                    GUI_StartGameScreen.label_Message.setText("Please fill usernam. Try new name");
+                    return;
+                }
                 
-                // Set gia tri cho man hinh info
-                
-                this.solve.getInfoOfUserFromServer(dataFromServer);
-                this.label_Username_Info.setText(this.solve.getUser().getUserName());
-                this.label_WinMatches.setText("Win matches: " + this.solve.getUser().getWinMatches());
-                this.label_AllMatches.setText("All matches: " + this.solve.getUser().getMatches());
-                
-                // Hien thi man hinh ke tiep va tat man hinh cu
-                
-                this.playForm.setVisible(true);
-                this.infoForm.setVisible(true);
-                this.loginForm.hide();
-                return;
-            }
-        }
+                GUI_StartGameScreen.server.send("Username-" + GUI_StartGameScreen.txt_Username.getText());
+                GUI_StartGameScreen.receiveDataAndAnalysis(); // Nhan du lieu tu server va phan tich xem do la thong tin gi (tra ra bien toan cuc step)
+
+                if (GUI_StartGameScreen.step == -2) {
+                    GUI_StartGameScreen.label_Message.setText("Username is duplicate. Try new name");
+                    GUI_StartGameScreen.label_Message.setVisible(true);
+                }
+                else if (GUI_StartGameScreen.step == 0) {
+
+                 // Set gia tri cho man hinh info
+
+                    GUI_StartGameScreen.solve.getInforOfUser(dataFromServer);
+                    label_Username_Info.setText(GUI_StartGameScreen.solve.getUser().getUserName());
+                    label_WinMatches.setText("Win matches: " + GUI_StartGameScreen.solve.getUser().getWinMatches());
+                    label_AllMatches.setText("All matches: " + GUI_StartGameScreen.solve.getUser().getMatches());
+
+                    // Hien thi man hinh ke tiep va tat man hinh cu
+
+                    playForm.setVisible(true);
+                    infoForm.setVisible(true);
+                    loginForm.hide();
+                }
+            } 
+        };
+        thread.start();
     }//GEN-LAST:event_button_LoginActionPerformed
 
     
     
     
     private void button_Accept_NextMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_Accept_NextMouseEntered
-        if (this.isAccept == false)
+        if (GUI_StartGameScreen.isAccept == 0)
         this.button_Accept_Next.setIcon(new ImageIcon(getClass().getResource("/Images/accept_button_hover.png")));
         else
         this.button_Accept_Next.setIcon(new ImageIcon(getClass().getResource("/Images/next_button_hover.png")));
     }//GEN-LAST:event_button_Accept_NextMouseEntered
 
     private void button_Accept_NextMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_Accept_NextMouseExited
-        if (this.isAccept == false)
+        if (GUI_StartGameScreen.isAccept == 0)
         this.button_Accept_Next.setIcon(new ImageIcon(getClass().getResource("/Images/accept_button.png")));
         else
         this.button_Accept_Next.setIcon(new ImageIcon(getClass().getResource("/Images/next_button.png")));
     }//GEN-LAST:event_button_Accept_NextMouseExited
 
     private void button_Accept_NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Accept_NextActionPerformed
-        this.isAccept = true;
-        this.button_Exit.setVisible(true);
-        
-        this.generalSolving(""); // Khong truyen du lieu
-        this.generalSolving("");
-        
-        this.cardInScreen = new ArrayList<>();
-        this.cardInScreen.add(new JLabel());
-        this.cardInScreen.get(0).setIcon(new ImageIcon(getClass().getResource("/Images/100.png")));
-        this.cardInScreen.get(0).setPreferredSize(new Dimension(100, 140));
-        this.playForm.add(this.cardInScreen.get(0));
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                if (GUI_StartGameScreen.isAccept == 0) {
+                    GUI_StartGameScreen.server.send("Accept"); // gui Accept chap nhan choi game
+                    receiveDataAndAnalysis(); 
+
+                    GUI_StartGameScreen.server.send("Devide card"); // Server gui tin la: cho chia bai, client gui tin yeu cau chia bai
+                    receiveDataAndAnalysis();
+
+                    GUI_StartGameScreen.solve.receivedCardFromServer(dataFromServer);
+                    receiveCardAndShowScreen();
+
+                    if (solve.getIsExchangeCard()) // Neu nhan duoc yeu cau trao doi bai tu server thi chuyen xuong isAccept = 1
+                        label_Introdution.setText("Choose 3 cards to exchange");
+                    else { // Neu khong nhan duoc yeu cau trao doi bai thi yeu cau server gui thu tu choi 
+                        label_Introdution.setText("Waiting to start game");
+                        server.send("SttPlay");
+                    }
+                }
+                else if (GUI_StartGameScreen.isAccept == 1) {
+                    if (solve.getCardExchange().getCards().size() != 3) {
+                        label_Introdution.setText("Choose 3 cards");
+                        return;
+                    }
+
+                    // set icon cho bai da gui di bang trong
+                    for (int i = 0; i < cardsPlayedScreen.size(); ++i)
+                        cardsPlayedScreen.get(i).setIcon(null);
+
+                    // send data
+                    label_Introdution.setText("Waiting to start game");
+                    server.send(solve.exchnageCard());
+
+                    // nhan data
+                    receiveDataAndAnalysis();
+                    solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
+                    
+
+                    // cap nhat du lieu cho man hinh
+                    for (int i = 10; i < 13; ++i) {
+                        String imagePath = imagePath(solve.getCard(i).getValue(), solve.getCard(i).getType());
+                        cardsPlayingScreen.get(i).setIcon(new ImageIcon(getClass().getResource(imagePath)));
+                        cardsPlayingScreen.get(i).setEnabled(true);
+                    }
+
+                    label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
+                }
+
+                GUI_StartGameScreen.isAccept += 1;
+                button_Exit.setVisible(true);
+            }
+        };
+        thread.start();
     }//GEN-LAST:event_button_Accept_NextActionPerformed
 
     
@@ -392,36 +622,32 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUI_StartGameScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUI_StartGameScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUI_StartGameScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(GUI_StartGameScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        
       
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUI_StartGameScreen().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new GUI_StartGameScreen().setVisible(true);
         });
         
         commands = new Commands(Commands.Mode.Console);  
         server = Server.connect("localhost", 1996);
         
         dataFromServer = server.receive();
-        step = DataReceivedAnalysis.resultAfterAnalysis(dataFromServer);
+        step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
         commands.excute(new Command_Hello(dataFromServer));
         
         // Khi ket noi thanh cong ta hien ta man hinh login cho user nhap ten, con dang ket noi ta se an di
         
-        txt_Username.setVisible(true);
-        button_Login.setVisible(true);
-        label_Username_Login.setVisible(true);
-        label_Message.setVisible(false);
+        txt_Username.setVisible(true); button_Login.setVisible(true);
+        label_Username_Login.setVisible(true); label_Message.setVisible(false);
+        
+        while (true) {
+            if (step >= 3) {
+                receiveDataAndAnalysis();
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -436,11 +662,30 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private javax.swing.JLabel label_Background_Login;
     private javax.swing.JLabel label_Background_Play;
     private javax.swing.JLabel label_Background_Startgame;
-    private javax.swing.JLabel label_Card;
+    private javax.swing.JLabel label_Card1;
+    private javax.swing.JLabel label_Card10;
+    private javax.swing.JLabel label_Card11;
+    private javax.swing.JLabel label_Card12;
+    private javax.swing.JLabel label_Card13;
+    private javax.swing.JLabel label_Card14;
+    private javax.swing.JLabel label_Card15;
+    private javax.swing.JLabel label_Card16;
+    private javax.swing.JLabel label_Card17;
+    private javax.swing.JLabel label_Card2;
+    private javax.swing.JLabel label_Card3;
+    private javax.swing.JLabel label_Card4;
+    private javax.swing.JLabel label_Card5;
+    private javax.swing.JLabel label_Card6;
+    private javax.swing.JLabel label_Card7;
+    private javax.swing.JLabel label_Card8;
+    private javax.swing.JLabel label_Card9;
+    private javax.swing.JLabel label_Introdution;
     private static javax.swing.JLabel label_Message;
+    private javax.swing.JLabel label_Score;
     private javax.swing.JLabel label_Username_Info;
     private static javax.swing.JLabel label_Username_Login;
     private javax.swing.JLabel label_WinMatches;
+    private javax.swing.JLabel label_sttPlay;
     private javax.swing.JFrame loginForm;
     private javax.swing.JFrame playForm;
     private static javax.swing.JTextField txt_Username;

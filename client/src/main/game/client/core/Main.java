@@ -49,7 +49,7 @@ import game.client.entity.Cards;
 
             // commands.excute(new Command_Hello(dataFromServer)); // in du lieu nhan duoc ra man hinh console ./.
              
-             int state = DataReceivedAnalysis.resultAfterAnalysis(dataFromServer);
+            // int state = DataReceivedAnalysis.resultAfterAnalysis(dataFromServer);
              //if (state != 3) // Neu state = 3 thi khong send data vi dang doi nhan du bai
                 //server.send(solve.solvingForClient(state, dataFromServer, cards));
              

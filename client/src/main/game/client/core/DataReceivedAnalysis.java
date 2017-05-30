@@ -10,7 +10,9 @@ Xử lí client-server tuân thủ theo nguyên tắc chung:
 public class DataReceivedAnalysis {
     public static int state = 0;
     
-    private static int login(String dataReceived) {
+    public DataReceivedAnalysis(){}
+    
+    private int login(String dataReceived) {
         if (dataReceived.contains("Duplicate username"))
             return -2;
         else if (dataReceived.contains("Welcome to Heart games"))
@@ -22,7 +24,7 @@ public class DataReceivedAnalysis {
         return -10;
     } // Nhan yeu cau phai login
     
-    private static int waitngToDevideCard(String dataReceived) {
+    private int waitngToDevideCard(String dataReceived) {
         if (dataReceived.contains("Waiting to devide card")) {
             state = 2;
             return 1;
@@ -30,7 +32,7 @@ public class DataReceivedAnalysis {
         return -10;
     } // Nhan yeu cau cho chia bai
     
-    private static int receive13Cards(String dataReceived) {
+    private int receive13Cards(String dataReceived) {
         if (dataReceived.contains("Cards-")) {
             state = 3;
             return 2;
@@ -38,23 +40,18 @@ public class DataReceivedAnalysis {
         return -10;
     } // Nhan yeu cau nhan 13 la bai
     
-    private static int waitingToExchangeCardsAndReceiveSTTPlay(String dataReceived) {
-        if (dataReceived.contains("Waiting to exchange card")) {
+                    
+    private int receiveSTTPlayAnd3Cards(String dataReceived) {
+        if (dataReceived.contains("Exchange card-") == true || 
+            dataReceived.contains("STTPlay-") == true) {
             state = 4;
             return 3;
-        }
-        return -10;
-    } // Nhan yeu cau cho nhan bai trao
-                    
-    private static int receiveSTTPlayAnd3Cards(String dataReceived) {
-        if (dataReceived.contains("Exchange card-")) {
-            return 4;
         }
         return -10;
     }
 
     
-    public static int resultAfterAnalysis(String dataReceived) {
+    public int resultAfterAnalysis(String dataReceived) {
         switch (state) {
             case 0: {
                 return login(dataReceived);
@@ -66,11 +63,11 @@ public class DataReceivedAnalysis {
                 return receive13Cards(dataReceived);
             }
             case 3: {
-                return  waitingToExchangeCardsAndReceiveSTTPlay(dataReceived);
-            }
-            case 4: {
                 return receiveSTTPlayAnd3Cards(dataReceived);
             }
+//            case 4: {
+//                return receiveSTTPlayAnd3Cards(dataReceived);
+//            }
         }
         return -3;
     }

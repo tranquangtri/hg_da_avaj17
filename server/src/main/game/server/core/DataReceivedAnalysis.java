@@ -13,25 +13,27 @@ Xử lí client-server tuân thủ theo nguyên tắc chung:
 public class DataReceivedAnalysis {
     public static int state = 0;
     
-    private static int login(String dataReceived) {
+    public DataReceivedAnalysis() {}
+    
+    private int login(String dataReceived) {
         if (dataReceived.contains("Username-") || dataReceived.contains("Username again-"))
             return 0;
         return -10;
     } // nhan yeu cau la login
     
-    private static int accept(String dataReceived) {
+    private int accept(String dataReceived) {
         if (dataReceived.contains("Accept"))
             return 1;
         return -10;
     } // nhan yeu cau la accept
     
-    private static int devideCard(String dataReceived) {
+    private int devideCard(String dataReceived) {
         if (dataReceived.contains("Devide card"))
             return 2;
         return -10;
     } // nhan yeu cau la chia bai
     
-    private static int exchange3CardsOrNo(String dataReceived) {
+    private int exchange3CardsOrNo(String dataReceived) {
         if (dataReceived.contains("3Cards") || dataReceived.contains("SttPlay"))
             return 3;
         return -10;
@@ -42,7 +44,7 @@ public class DataReceivedAnalysis {
     
     
     
-    public static int resultAfterAnalysis(String dataReceived, Connection con) {
+    public int resultAfterAnalysis(String dataReceived, Connection con) {
         switch (state) {
             case 0: {
                 return login(dataReceived); // Nhan thong tin login

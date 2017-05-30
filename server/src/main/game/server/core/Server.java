@@ -1,5 +1,9 @@
 package game.server.core;
+import game.server.IAcceptClientHandler;
+import game.server.IClientHandler;
 import game.server.IClientManager;
+import game.server.RoutineServer;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
@@ -11,69 +15,47 @@ import java.util.concurrent.*;
  */
 class Server{
     private final int port;
+    private IClientHandler clientHandler = null;
+    private IAcceptClientHandler acceptClientHandler = null;
+    private IClientManager clientManager = null;
 
     public Server(int port){
         this.port = port;
     }
+    public void setClientManager(IClientManager clientManager){
+        this.clientManager = clientManager;
+    }
+    public void setClientHandler(IClientHandler clientHandler){
+        this.clientHandler = clientHandler;
+    }
+    public void setAcceptClientHandler(IAcceptClientHandler acceptClientHandler){
+        this.acceptClientHandler = acceptClientHandler;
+    }
 
-    public void start(){
-        /* Create and open socket on specific port */
-        ServerSocket server = null;
+
+    public void start() {
+        /** AcceptClientHandler
+         *      - Sẽ làm nhiệm vụ chấp nhận các kết nối từ serverSocket
+         *      - Các kết nối được chấp nhận sẽ được thêm vào và quản lý
+         *      bởi ClientManager
+         *  Sau cùng ClientHandler được chạy để cài đặt quá trình gửi nhận
+         *  gói tin theo kịch bản.
+         *
+         *  AcceptClientHandler, ClientHandler, ClientManager được inject
+         *  từ applicationContext.xml
+         *  */
+        ServerSocket serverSocket = null;
         try {
-            server = new ServerSocket(port);
-        }catch (IOException e){
-            System.err.println("\nCannot open and create serversocket !\n");
-            throw new RuntimeException(e);
-        }
-
-        /* Create time counting task for n seconds*/
-        Callable<Boolean> timeCount = ()-> {
-                try {
-                    TimeUnit.SECONDS.sleep(20);
-                } catch (InterruptedException e) {}
-                return true;
-        };
-
-        /* Create cached thread pool */
-        ExecutorService services = Executors.newCachedThreadPool();
-
-        /* Start thread timeCount and acceptClients */
-        Future<Boolean> futureTimeCount = services.submit(timeCount);
-        services.execute(TaskAcceptClients.fromServerSocket(server));
-
-         /* Wait until timeout and close server socket */
-        try {
-            futureTimeCount.get();
-            if (!server.isClosed());
-                 server.close();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        try {
-            IClientManager clientManager = ClientManager.getInstance();
-            Object o = null;
-            try {
-                o = Class.forName("game.server.RoutineServer").getConstructor(IClientManager.class).newInstance(clientManager);
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-            if (o instanceof Runnable){
-                Runnable routine = (Runnable)o;
-                routine.run();
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+        acceptClientHandler.setServerSocket(serverSocket);
+        acceptClientHandler.setClientManager(clientManager);
+        acceptClientHandler.run();
+
+        clientHandler.setClientManager(clientManager);
+        clientHandler.run();
     }
 }
 
