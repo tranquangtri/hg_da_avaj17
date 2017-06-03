@@ -2,7 +2,6 @@ package game.server;
 
 import game.server.core.DataReceivedAnalysis;
 import game.server.entity.Result;
-import game.server.core.Solve;
 import game.server.database.DataConnection;
 
 
@@ -22,7 +21,7 @@ public class RoutineServer implements IClientHandler{
          *  2. Client gửi trả lại Welcome Server
          *
          */
-        Solve solve = Solve.Instance();
+        Solve solve = new Solve();
         DataConnection con = new DataConnection();
         DataReceivedAnalysis dataAnalysis = new DataReceivedAnalysis();
         
@@ -53,9 +52,9 @@ public class RoutineServer implements IClientHandler{
                         clientManager.send(i, result.getMessage());
                     }
                     
-                    if (Solve.countFeedback == clientManager.getCount()) { // Biến đếm để kiểm tra server nhận đủ 4 gói tin (kết thúc 1 công đoạn) từ
+                    if (solve.countFeedback == clientManager.getCount()) { // Biến đếm để kiểm tra server nhận đủ 4 gói tin (kết thúc 1 công đoạn) từ
                                                                             // client => nhảy qua công đaon5 khác khi đã nhận đủ 4 tin cho 1 giai đoạn
-                        Solve.countFeedback = 0;
+                        solve.countFeedback = 0;
                         DataReceivedAnalysis.state += 1;
                     }
                 }

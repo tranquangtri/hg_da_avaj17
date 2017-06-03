@@ -18,7 +18,7 @@ public class Cards {
                     cards.add(new Card(i, j));
             }
     }
-    
+
     public Cards(String data) { // Ham tao bai cho user (13 la hoac 3 la)
         if (data == null)
             return;

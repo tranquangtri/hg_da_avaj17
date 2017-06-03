@@ -27,7 +27,16 @@ public class Cards {
         for (int i = 0; i < card.length; ++i)
             this.cards.add(new Card(Integer.parseInt(card[i]), Integer.parseInt(card[++i])));
     }
-    
+    public static String packedCardSToSendClient(ArrayList<Card> cards) {
+        String data = "";
+        for (int i = 0; i < cards.size(); ++i) {
+            data += Integer.toString(cards.get(i).getValue()) + " " + Integer.toString(cards.get(i).getType());
+            if (i != cards.size() - 1)
+                data += " ";
+        }
+        System.out.println(data);
+        return "Cards-" + data;
+    }
     public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
     }

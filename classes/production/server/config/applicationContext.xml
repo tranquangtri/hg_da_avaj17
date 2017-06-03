@@ -7,15 +7,17 @@
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-4.3.xsd">
     <bean id="server" class="game.server.core.Server">
-        <property name="port" value="1996"/>
-        <property name="routineServer" ref="routine"/>
+        <constructor-arg name="port" value="1996"/>
+        <property name="acceptClientHandler">
+            <bean class="game.server.core.LimitTimeAcceptClientHandler">
+                <property name="timeout" value="20"/>
+            </bean>
+        </property>
+        <property name="clientHandler">
+            <bean class="game.server.RoutineServer"/>
+        </property>
         <property name="clientManager">
             <bean class="game.server.core.ClientManager"/>
-        </property>
-    </bean>
-    <bean id="routine" class="game.server.RoutineServer">
-        <property name="solve">
-            <bean class="game.server.core.Solve" factory-method="Instance"/>
         </property>
     </bean>
 </beans>
