@@ -18,8 +18,11 @@ public class Cards {
                     cards.add(new Card(i, j));
             }
     }
-    
+
     public Cards(String data) { // Ham tao bai cho user (13 la hoac 3 la)
+        if (data == null)
+            return;
+        
         String[] card = data.split(" ");
         for (int i = 0; i < card.length; ++i)
             this.cards.add(new Card(Integer.parseInt(card[i]), Integer.parseInt(card[++i])));
@@ -29,21 +32,41 @@ public class Cards {
         this.cards = cards;
     }
     
+    public void setCard(int index, int value, int type) {
+        this.cards.get(index).setValue(value);
+        this.cards.get(index).setType(type);
+    }
+    
+    
     public ArrayList<Card> getCards() {
         return this.cards;
     }
     
-    public static ArrayList<Card> shuffleCards(ArrayList<Card> cards) { // ham xao bai ./.
+    public void add(int value, int type) {
+        this.cards.add(new Card(value, type));
+    }
+    
+    public void add(Card card) {
+        this.cards.add(card);
+    }
+    
+    public void delete(int index) {
+        this.cards.remove(index);
+    }
+    
+    public ArrayList<Card> shuffleCards(ArrayList<Card> cards) { // ham xao bai ./.
         Set<Card> newCards = new HashSet<>();
         Random rand = new Random();
         
         while (newCards.size() != 52) 
             newCards.add(cards.get(rand.nextInt(52)));
         
-        return new ArrayList<>(newCards);
+        this.cards.removeAll(cards);
+        this.cards = new ArrayList<>(newCards);
+        return this.cards;
     }
     
-    public static ArrayList<ArrayList<Card>> divideCards(ArrayList<Card> card_52) {
+    public ArrayList<ArrayList<Card>> divideCards(ArrayList<Card> card_52) {
         int j = 0;
         ArrayList<ArrayList<Card>> card_13 = new ArrayList<>();
         
@@ -58,7 +81,7 @@ public class Cards {
         return card_13;
     }
     
-    public static int find3Blanges(ArrayList<ArrayList<Card>> card_13) {
+    public int find3Blanges(ArrayList<ArrayList<Card>> card_13) {
         for (int i = 0; i < card_13.size(); ++i)
             for (int j = 0; j < card_13.get(i).size(); ++j)
                 if (card_13.get(i).get(j).getValue() == 3 && card_13.get(i).get(j).getType() == 0)

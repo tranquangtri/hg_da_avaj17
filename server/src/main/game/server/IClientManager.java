@@ -17,4 +17,5 @@ public interface IClientManager{
     public void send(int client, String message);
     public int getCount();
     public String receive(int index);
+    public void add(IClient client);
 }
