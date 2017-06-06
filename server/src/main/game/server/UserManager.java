@@ -53,6 +53,7 @@ class UserManager{
         dataSendClient =  userName + " " + user.getMatches() + " " + user.getWinMatches() + "-should click 'ACCEPT' to start game" ;
 
         this.users.add(user);
+        con.freeConnection();
         return dataSendClient;
     }
     public User get(int index){

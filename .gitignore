@@ -16,3 +16,4 @@ report/_latex
 
 # bash file
 *.bat
+/.nb-gradle/

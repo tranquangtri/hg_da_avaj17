@@ -44,7 +44,7 @@ public class DataReceivedAnalysis {
     
     
     
-    public int resultAfterAnalysis(String dataReceived, Connection con) {
+    public int resultAfterAnalysis(String dataReceived) {
         switch (state) {
             case 0: {
                 return login(dataReceived); // Nhan thong tin login

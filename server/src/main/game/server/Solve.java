@@ -34,7 +34,7 @@ public class Solve {
     private int exchangeCardTime; // Lan doi bai: co 4 lan doi bai
     private OnlyReceiveServerFlag flag; // Trong qua trinh lam co 2 giai doan server khong gui tin cho client ma doi nhan du thong tin tu
     // client do la nhan accept va nhan bai trao doi.
-    public int countFeedback = 0; // Dem so lan nhan phan hoi tu client. Neu du thi tro ve 0
+    public static int countFeedback = 0; // Dem so lan nhan phan hoi tu client. Neu du thi tro ve 0
 
     public Solve() {
         flag = OnlyReceiveServerFlag.ReceiveAccept;
