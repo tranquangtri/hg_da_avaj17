@@ -1,6 +1,5 @@
 package game.server.core;
 
-import java.sql.Connection;
 
 /*
 Xử lí client-server tuân thủ theo nguyên tắc chung:

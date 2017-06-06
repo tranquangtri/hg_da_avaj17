@@ -3,6 +3,8 @@ package game.server;
 import game.server.core.DataReceivedAnalysis;
 import game.server.entity.Result;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class MyThread {
     private Thread thr;
@@ -53,17 +55,22 @@ public class RoutineServer implements IClientHandler{
         Solve solve = new Solve();
         DataReceivedAnalysis dataAnalysis = new DataReceivedAnalysis();
         
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RoutineServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         System.out.println("Number of client: " + Integer.toString(clientManager.getCount()));
         clientManager.sendAll("Welcome to Heart games ! Please, input username:");
 
         ArrayList<MyThread> thread = new ArrayList<>();
-        for (int i = 0; i < 2; ++i) {
+        for (int i = 0; i < 4; ++i) {
             thread.add(new MyThread(i, clientManager, dataAnalysis, solve));
             thread.get(i).Start();
         }
         
         while (true) {
-            System.out.println();
             if (DataReceivedAnalysis.state >= 1) {
                 if (!thread.isEmpty())
                     thread.removeAll(thread);
@@ -94,6 +101,13 @@ public class RoutineServer implements IClientHandler{
                         Solve.countFeedback = 0;
                         DataReceivedAnalysis.state += 1;
                     }
+                }
+            } else {
+                System.out.println();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(RoutineServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

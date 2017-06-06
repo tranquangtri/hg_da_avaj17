@@ -9,6 +9,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
+class MyThread {
+    private Thread thr;
+    
+}
+
+
 class Command_Hello implements ICommand{
     final private String message;
     public Command_Hello(String message){
