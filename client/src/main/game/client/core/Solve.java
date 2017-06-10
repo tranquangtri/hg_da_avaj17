@@ -115,7 +115,6 @@ public class Solve {
 
         for (int i = 0; i < dat.length; i += 2)
             if (Integer.parseInt(dat[i]) == this.user.getSttPlay()) {
-                System.out.println("OLD INDEX++++" + this.user.getSttPlay());
                 this.user.setSttPlay(Integer.parseInt(dat[i + 1]));
                 break;
             }
@@ -126,7 +125,6 @@ public class Solve {
         String[] card = data[1].split(" ");
         
         ArrayList<Integer> result = new ArrayList<>();
-     
         this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
         
         if (cardsPlayed.getCards().size() == 1)

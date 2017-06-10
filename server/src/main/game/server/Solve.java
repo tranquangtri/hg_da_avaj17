@@ -89,15 +89,9 @@ public class Solve {
             for (int i = 0; i < this.userManager.size(); ++i) {
                 if (i != 0)
                     result += " ";
-                result += Integer.toString(newStrIndex) + " " + Integer.toString(index);
-                this.userManager.get(newStrIndex++).setSttPlay(index++);
-
+                result += Integer.toString(newStrIndex++) + " " + Integer.toString(index++);
                 if (newStrIndex == this.userManager.size())
                     newStrIndex = 0;
-            }
-            
-            for (int i = 0; i < this.userManager.size(); ++i) {
-               System.out.println("STTPLAY " + i + "-----" + this.userManager.get(i).getSttPlay());
             }
         }
         catch(Exception ex) {
@@ -131,29 +125,32 @@ public class Solve {
         System.out.println("INDEX     " + index);
         
         for (int i = 0; i < this.userManager.size(); ++i) {
-            System.out.println("i     " + i + "++++" + this.userManager.get(i).getSttPlay());
+            //System.out.println("i     " + i + "++++" + this.userManager.get(i).getSttPlay());
             if (this.userManager.get(i).getSttPlay() == index) {
                 this.userManager.setStrIndex(i);
-//                break;
+                break;
             }
         }
         
-        System.out.println("STRT     " + this.userManager.getStrIndex());
+        System.out.println("STRT INDEX    " + this.userManager.getStrIndex());
         
-        // Cap nhat lai sttPlay cho cac user
-//        int j = this.userManager.getStrIndex();
-//        for (int i = 0; i < this.userManager.size(); ++i) {
-//            if (j == this.userManager.size())
-//                j = 0;
-//            this.userManager.get(j++).setSttPlay(i);
-//        }
+         //Cap nhat lai sttPlay cho cac user
+        int j = this.userManager.getStrIndex();
+        for (int i = 0; i < this.userManager.size(); ++i) {
+            if (j == this.userManager.size())
+                j = 0;
+            this.userManager.get(j++).setSttPlay(i);
+        }
         
+        for (int i = 0; i < this.userManager.size(); ++i) {
+           System.out.println("STTPLAY " + i + "-----" + this.userManager.get(i).getSttPlay());
+        }
         
         if (point == 0)
-            return "None win points-" + index + "-" + findNextPlay(this.userManager.getStrIndex());
+            return "None win points-" + index + "-" + findNextPlay(index);
         
         this.userManager.get(index).setPoint(point);
-        return "winpoint-" + index + " " + point + "-" + findNextPlay(this.userManager.getStrIndex());
+        return "winpoint-" + index + " " + point + "-" + findNextPlay(index);
     }
     
     public String play(int indexOfClient, String dataFromClient) {
