@@ -1,35 +1,15 @@
 package game.client.core;
 
 import game.client.entity.Card;
+import game.client.entity.UICards;
 
 import javax.swing.ImageIcon;
-import java.util.ArrayList;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 
-class MyThread {
-    private Thread thr;
-    
-}
-
-
-class Command_Hello implements ICommand{
-    final private String message;
-    public Command_Hello(String message){
-        this.message = message;
-    }
-    @Override
-    public void excuteConsoleMode() {
-        System.out.println("Server: " + message );
-    }
-
-    @Override
-    public void excuteGuiMode() {
-
-    }
-}
 
 
 public class GUI_StartGameScreen extends javax.swing.JFrame {
@@ -38,14 +18,15 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private static Server server;
     private static Solve solve;
     private static int step;
-    private static Commands commands;
     private static int isAccept;
+
     
-    private static ArrayList<JLabel> cardsPlayingScreen = null;
-    private static ArrayList<JLabel> cardsPlayedScreen = null;
     
-    private int g = 0;
-   
+    private static UICards cardsPlayingScreen;
+    private static UICards cardsPlayedScreen;
+    
+    
+    
     public GUI_StartGameScreen() {
         initComponents();
         
@@ -55,6 +36,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         // Set thong tin ban dau cho giao dien ./.
         
         GUI_StartGameScreen.isAccept = 0;
+        //GUI_StartGameScreen.isPlay = false;
         
         GUI_StartGameScreen.txt_Username.setVisible(false);
         GUI_StartGameScreen.label_Username_Login.setVisible(false);
@@ -71,30 +53,31 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
     
+    /////////////////////// Setting cac bo bai hien thi tren giao dien //////////////////////////////////
+    
     private void settingPlayingCard() {
-        cardsPlayingScreen = new ArrayList<>();
+        cardsPlayingScreen = new UICards();
         
-        cardsPlayingScreen.add(label_Card1);
-        cardsPlayingScreen.add(label_Card2);cardsPlayingScreen.add(label_Card3);cardsPlayingScreen.add(label_Card4);
-        cardsPlayingScreen.add(label_Card5);cardsPlayingScreen.add(label_Card6);cardsPlayingScreen.add(label_Card7);
-        cardsPlayingScreen.add(label_Card8);cardsPlayingScreen.add(label_Card9);cardsPlayingScreen.add(label_Card10);
-        cardsPlayingScreen.add(label_Card11);cardsPlayingScreen.add(label_Card12);cardsPlayingScreen.add(label_Card13);
+        cardsPlayingScreen.addCards(label_Card1);
+        cardsPlayingScreen.addCards(label_Card2);cardsPlayingScreen.addCards(label_Card3);cardsPlayingScreen.addCards(label_Card4);
+        cardsPlayingScreen.addCards(label_Card5);cardsPlayingScreen.addCards(label_Card6);cardsPlayingScreen.addCards(label_Card7);
+        cardsPlayingScreen.addCards(label_Card8);cardsPlayingScreen.addCards(label_Card9);cardsPlayingScreen.addCards(label_Card10);
+        cardsPlayingScreen.addCards(label_Card11);cardsPlayingScreen.addCards(label_Card12);cardsPlayingScreen.addCards(label_Card13);
        
         
-        for (int i = 0; i < cardsPlayingScreen.size(); ++i) {
-            cardsPlayingScreen.get(i).addMouseListener(new MouseAdapter() {
+        for (int i = 0; i < cardsPlayingScreen.getSize(); ++i) {
+            cardsPlayingScreen.getUICard(i).addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     
                     if (step == 2 && solve.getCardExchange().getCards().size() != 3) {
-                        int index = findingIndexLabelInArray((JLabel)e.getSource());
-                        Card card = solve.getCard(index);
-                        solve.getCardExchange().getCards().add(card);
-                        cardsPlayedScreen.get(g++).setIcon(new ImageIcon(getClass().getResource(imagePath(card.getValue(), card.getType()))));
-
-                        //sap xep lai bai
-                        sortCard(index);
-                        solve.sortCard(index);
+                        playCard(e);
+                    }
+                    
+                    else if (step >= 3) {
+                        Card card = playCard(e);
+                        server.send("Card played-" + card.getValue() + " " + card.getType());
+                        System.out.println("Card played-" + card.getValue() + " " + card.getType());
                     }
                 }
 
@@ -103,48 +86,73 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     }
     
     private void settingPlayedCard() {
-        cardsPlayedScreen = new ArrayList<>();
-        cardsPlayedScreen.add(label_Card14);cardsPlayedScreen.add(label_Card15);
-        cardsPlayedScreen.add(label_Card16);cardsPlayedScreen.add(label_Card17);
-        
-        
+        cardsPlayedScreen = new UICards();
+        cardsPlayedScreen.addCards(label_Card14);cardsPlayedScreen.addCards(label_Card15);
+        cardsPlayedScreen.addCards(label_Card16);cardsPlayedScreen.addCards(label_Card17);
     }
     
-    private static void receiveDataAndAnalysis() { // Nhan du lieu tu server va phan tich xem yeu cau cua server la gi
-        dataFromServer = server.receive();
-        commands.excute(new Command_Hello(dataFromServer));
-        step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
-        System.out.println(step);
-    }
     
-    private String imagePath(int value, int type) {
-        return  "/Images/" + value + type + ".png";
-    }
-
-    private void receiveCardAndShowScreen() {
-        for (int i = 0; i < solve.getCards().getCards().size(); ++i) {
-            String imagePath = this.imagePath(solve.getCards().getCards().get(i).getValue(), 
-                                              solve.getCards().getCards().get(i).getType());
-            cardsPlayingScreen.get(i).setIcon(new ImageIcon(getClass().getResource(imagePath)));
-        }
-    }
     
+    ///////////////////// Cac ham ho tro hien thi bai len giao dien ////////////////////////////////////
+    
+   
     private int findingIndexLabelInArray(JLabel label) {
-        for (int i = 0; i < cardsPlayingScreen.size(); ++i)
-            if (cardsPlayingScreen.get(i).equals(label))
+        if (label.isEnabled()) {
+            for (int i = 0; i < cardsPlayingScreen.getSize(); ++i)
+            if (cardsPlayingScreen.getUICard(i).equals(label))
                 return i;
+        }
         return -1;
     }
     
     private void sortCard(int index) {
-        int N = cardsPlayingScreen.size() - 1;
+        int N = cardsPlayingScreen.getSize()- 1;
         for (int i = index; i < N; ++i)
-            cardsPlayingScreen.get(i).setIcon(cardsPlayingScreen.get(i + 1).getIcon());
-        cardsPlayingScreen.get(N).setIcon(null);
-        cardsPlayingScreen.get(N).setEnabled(false);
+            cardsPlayingScreen.getUICard(i).setIcon(cardsPlayingScreen.getUICard(i + 1).getIcon());
+        cardsPlayingScreen.getUICard(N).setIcon(null);
+        cardsPlayingScreen.getUICard(N).setEnabled(false);
+    }
+    
+    private Card playCard(MouseEvent e) {
+        int index = findingIndexLabelInArray((JLabel)e.getSource());
+        Card card = solve.getCard(index);
+        
+        if (step == 2) // Buoc 2: trao doi bai
+            solve.getCardExchange().getCards().add(card);
+        
+        int indexOfScreen = solve.getCardExchange().getCards().size() - 1;
+        if (indexOfScreen < 0) indexOfScreen = 0;
+        
+        cardsPlayedScreen.setCardsInScreen(indexOfScreen, card);
+
+        //sap xep lai bai
+        sortCard(index);
+        solve.sortCard(index);
+        
+        return card;
     }
     
     
+    ////////////////////// Nhan du lieu tu server va xu li /////////////////////////////////////////////
+    
+    private static void receiveDataAndAnalysis() { // Nhan du lieu tu server va phan tich xem yeu cau cua server la gi
+        dataFromServer = server.receive();
+        step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
+        
+        System.out.println(dataFromServer);
+        System.out.println(step);
+    }
+    
+    private void receiveCardAndShowScreen() {
+        for (int i = 0; i < solve.getCards().getCards().size(); ++i) 
+            cardsPlayingScreen.setCardsInScreen(i, solve.getCards().getCards().get(i));
+    }
+    
+    
+    
+    
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
     @SuppressWarnings("unchecked")
@@ -517,13 +525,14 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
     private void button_Accept_NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_Accept_NextActionPerformed
 
-        Thread thread = new Thread() {
+        Thread thread;
+        thread = new Thread() {
             @Override
             public void run() {
                 if (GUI_StartGameScreen.isAccept == 0) {
                     GUI_StartGameScreen.server.send("Accept"); // gui Accept chap nhan choi game
-                    receiveDataAndAnalysis(); 
-
+                    receiveDataAndAnalysis();
+                    
                     GUI_StartGameScreen.server.send("Devide card"); // Server gui tin la: cho chia bai, client gui tin yeu cau chia bai
                     receiveDataAndAnalysis();
 
@@ -543,9 +552,8 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                         return;
                     }
 
-                    // set icon cho bai da gui di bang trong
-                    for (int i = 0; i < cardsPlayedScreen.size(); ++i)
-                        cardsPlayedScreen.get(i).setIcon(null);
+                    // set icon cho bai da gui di = trong
+                    cardsPlayedScreen.setCardsInScreenNull();
 
                     // send data
                     label_Introdution.setText("Waiting to start game");
@@ -553,15 +561,20 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
                     // nhan data
                     receiveDataAndAnalysis();
-                    solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
+                    boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
                     
 
                     // cap nhat du lieu cho man hinh
-                    for (int i = 10; i < 13; ++i) {
-                        String imagePath = imagePath(solve.getCard(i).getValue(), solve.getCard(i).getType());
-                        cardsPlayingScreen.get(i).setIcon(new ImageIcon(getClass().getResource(imagePath)));
-                        cardsPlayingScreen.get(i).setEnabled(true);
+                    for (int i = 0; i < 13; ++i) {
+                        cardsPlayingScreen.setCardsInScreen(i, solve.getCard(i));
+                        cardsPlayingScreen.getUICard(i).setEnabled(true);
                     }
+                    
+                    // Neu khong client khong phai la nguoi danh bai dau tien thi enable cac la bai
+                    if (!isPlay)
+                        cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
+                    else
+                        cardsPlayingScreen.setEnableForCards(1, solve.getTypeOfCard(), solve.getCards());
 
                     label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
                 }
@@ -613,7 +626,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     
     
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        this.server.close();
+        GUI_StartGameScreen.server.close();
     }//GEN-LAST:event_formWindowClosed
 
     
@@ -637,24 +650,61 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             new GUI_StartGameScreen().setVisible(true);
         });
         
-        commands = new Commands(Commands.Mode.Console);  
         server = Server.connect("localhost", 1996);
-        
         dataFromServer = server.receive();
         step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
-        commands.excute(new Command_Hello(dataFromServer));
+        System.out.println(dataFromServer);
         
         // Khi ket noi thanh cong ta hien ta man hinh login cho user nhap ten, con dang ket noi ta se an di
         
         txt_Username.setVisible(true); button_Login.setVisible(true);
         label_Username_Login.setVisible(true); label_Message.setVisible(false);
         
-        while (true) {
-            if (step >= 3) {
-                receiveDataAndAnalysis();
+        Thread listenMSG;
+        listenMSG = new Thread(){
+            @Override
+            public void run() {
+                while (true) {
+                    if (step >= 3) {
+                        receiveDataAndAnalysis();
+                        ArrayList<Integer> result = solve.play(dataFromServer);
+                        
+                        cardsPlayingScreen.setEnableForCards(result.get(0), solve.getTypeOfCard(), solve.getCards());
+                        cardsPlayedScreen.setCardsInScreen(solve.getCardsPlayed());
+                        
+                        if (result.size() > 1) {
+                            int score = -1;
+                            if (result.size() == 3) {//th: an diem 
+                                score = result.get(2) + Integer.parseInt(label_Score.getText().split(" ")[1]);
+                                JOptionPane.showMessageDialog(null, "Player " + result.get(1) + ": win points " + score);
+                            }
+                            
+                            if (solve.getUser().getSttPlay() == result.get(1)) {
+                                cardsPlayingScreen.setEnableForCards(0, solve.getTypeOfCard(), solve.getCards());
+                                if (score > -1)
+                                    label_Score.setText("SCORE: " + score);
+                            }
+                            else
+                                cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
+                            
+                            solve.updateOrderOfNewPlay(dataFromServer);
+                            label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
+                            cardsPlayedScreen.setCardsInScreenNull();
+                        }
+                    }
+                    else {
+                        System.out.println();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ex) {}
+                    }
+                }
             }
-        }
+        };
+        listenMSG.start();
     }
+    
+    /*e ma dung lam nhieu, may voi thang thong sua phan giao dien nhieu qua roi*/
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_Accept_Next;
@@ -687,11 +737,11 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private javax.swing.JLabel label_Card9;
     private javax.swing.JLabel label_Introdution;
     private static javax.swing.JLabel label_Message;
-    private javax.swing.JLabel label_Score;
+    private static javax.swing.JLabel label_Score;
     private javax.swing.JLabel label_Username_Info;
     private static javax.swing.JLabel label_Username_Login;
     private javax.swing.JLabel label_WinMatches;
-    private javax.swing.JLabel label_sttPlay;
+    private static javax.swing.JLabel label_sttPlay;
     private javax.swing.JFrame loginForm;
     private javax.swing.JFrame playForm;
     private static javax.swing.JTextField txt_Username;

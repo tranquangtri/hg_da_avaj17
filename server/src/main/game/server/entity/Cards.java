@@ -27,6 +27,7 @@ public class Cards {
         for (int i = 0; i < card.length; ++i)
             this.cards.add(new Card(Integer.parseInt(card[i]), Integer.parseInt(card[++i])));
     }
+    
     public static String packedCardSToSendClient(ArrayList<Card> cards) {
         String data = "";
         for (int i = 0; i < cards.size(); ++i) {
@@ -37,6 +38,7 @@ public class Cards {
         System.out.println(data);
         return "Cards-" + data;
     }
+    
     public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
     }
@@ -49,11 +51,12 @@ public class Cards {
         Set<Card> newCards = new HashSet<>();
         Random rand = new Random();
         
-        while (newCards.size() != 52) 
-            newCards.add(cards.get(rand.nextInt(52)));
+        while (newCards.size() != cards.size()) 
+            newCards.add(cards.get(rand.nextInt(cards.size())));
         
         this.cards.removeAll(cards);
         this.cards = new ArrayList<>(newCards);
+        
         return this.cards;
     }
     
@@ -72,11 +75,12 @@ public class Cards {
         return card_13;
     }
     
-    public int find3Blanges(ArrayList<ArrayList<Card>> card_13) {
+    public int find2ClubIn4Cards(ArrayList<ArrayList<Card>> card_13) {
         for (int i = 0; i < card_13.size(); ++i)
             for (int j = 0; j < card_13.get(i).size(); ++j)
-                if (card_13.get(i).get(j).getValue() == 3 && card_13.get(i).get(j).getType() == 0)
+                if (card_13.get(i).get(j).getValue() == 2 && card_13.get(i).get(j).getType() == 1)
                     return i;
         return -1;
     }
+    
 }

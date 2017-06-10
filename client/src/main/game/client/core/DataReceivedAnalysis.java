@@ -39,8 +39,7 @@ public class DataReceivedAnalysis {
         }
         return -10;
     } // Nhan yeu cau nhan 13 la bai
-    
-                    
+                  
     private int receiveSTTPlayAnd3Cards(String dataReceived) {
         if (dataReceived.contains("Exchange card-") == true || 
             dataReceived.contains("STTPlay-") == true) {
@@ -50,6 +49,16 @@ public class DataReceivedAnalysis {
         return -10;
     }
 
+    private int receivePlayedCard(String dataReceived) {
+        if (dataReceived.contains("Card played")) {
+            return 4;
+        }
+        return -10;       
+    }
+    
+    
+    
+    
     
     public int resultAfterAnalysis(String dataReceived) {
         switch (state) {
@@ -65,9 +74,10 @@ public class DataReceivedAnalysis {
             case 3: {
                 return receiveSTTPlayAnd3Cards(dataReceived);
             }
-//            case 4: {
-//                return receiveSTTPlayAnd3Cards(dataReceived);
-//            }
+            case 4: {
+                return receivePlayedCard(dataReceived);
+            }
+            
         }
         return -3;
     }

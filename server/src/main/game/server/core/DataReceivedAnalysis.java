@@ -38,7 +38,11 @@ public class DataReceivedAnalysis {
         return -10;
     } // nhan yeu cau trao doi 3 la bai hoac choi game
     
-    
+    private int receivedPlayedCardFromClient(String dataReceived) {
+        if (dataReceived.contains("Card played"))
+            return 5;
+        return -10;
+    }
     
     
     
@@ -56,6 +60,9 @@ public class DataReceivedAnalysis {
             }
             case 3: {
                 return exchange3CardsOrNo(dataReceived); //
+            }
+            case 5: {
+                return receivedPlayedCardFromClient(dataReceived);
             }
         }
         return -1;

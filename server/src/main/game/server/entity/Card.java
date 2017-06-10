@@ -28,4 +28,13 @@ public class Card {
     public int getValue() {
         return this.value;
     }
+    
+    public boolean isSmaller(Card card) {
+        if (this.type < card.getType())
+            return true;
+        if (this.type == card.getType()) 
+            if (this.value < card.getValue())
+                return true;
+        return false;
+    }
 }

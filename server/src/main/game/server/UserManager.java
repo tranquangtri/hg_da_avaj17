@@ -1,19 +1,3 @@
-/*
- * Copyright [2017] [TTT group]
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package game.server;
 
 import game.server.database.DataConnection;
@@ -23,19 +7,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 class UserManager{
-    private List<User> users;
+    private final List<User> users;
+    private int strIndex;
+    
     public UserManager(){
         users = new ArrayList<>();
+        strIndex = 0;
     }
+
+    public int getStrIndex() {
+        return strIndex;
+    }
+
+    public void setStrIndex(int strIndex) {
+        if (strIndex != -1)
+            this.strIndex = strIndex;
+    }
+    
+    public User get(int index){
+        return this.users.get(index);
+    }
+    
+    public int size(){
+        return users.size();
+    }
+    
+    
     public void add(User user){
         users.add(user);
     }
+    
     private Boolean isDuplicateRegisterUserName(String userName) {
         for (int i = 0; i < this.users.size(); ++i)
             if (userName.equals(this.users.get(i).getUserName()))
                 return true;
         return false;
     } // Kiem tra user co bi trung khong
+    
     public String login(String userName){
         DataConnection con = new DataConnection();
         User user = con.getUserIfHaving(userName);
@@ -56,25 +64,19 @@ class UserManager{
         con.freeConnection();
         return dataSendClient;
     }
-    public User get(int index){
-        return this.users.get(index);
-    }
-    public int size(){
-        return users.size();
-    }
+    
     public void sortSTTPlay(int startIndex) {
         if (startIndex != -1) {
             for (int i = 0; i != size();) {
                 if (startIndex == size())
                     startIndex = 0;
                 try {
-                    get(startIndex++).setSttPlay(i++);
+                    users.get(startIndex++).setSttPlay(i++);
                 }
                 catch (Exception ex) {break;}
             }
         }
-
-        for (int i = 0; i < size(); ++i)
-            System.out.println(get(i).getSttPlay());
     }
+    
+    
 }

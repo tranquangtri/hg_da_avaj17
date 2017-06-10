@@ -6,12 +6,14 @@ public class User {
     private int matches;
     private int winMatches;
     private int sttPlay;
+    private int point;
     
     public User() {
         this.userName = "";
         this.matches = 0;
         this.winMatches = 0;
         this.sttPlay = -1;
+        this.point = 0;
     }
     
     public User(String userName, int matchces, int winMatches, int state) {
@@ -19,6 +21,7 @@ public class User {
         this.matches = matchces;
         this.winMatches = winMatches;
         this.sttPlay = -1;
+        this.point = 0;
     }
     
     public void setUserName(String userName) {
@@ -37,6 +40,10 @@ public class User {
         this.sttPlay = stt;
     }
     
+    public void setPoint(int point) {
+        this.point += point;
+    }
+    
     public String getUserName() {
         return this.userName;
     }
@@ -52,6 +59,10 @@ public class User {
     
     public int getSttPlay() {
         return this.sttPlay;
+    }
+    
+    public int getPoint() {
+        return this.point;
     }
     
     public Boolean isEmptyUser() {

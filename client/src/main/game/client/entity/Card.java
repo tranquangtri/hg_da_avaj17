@@ -13,6 +13,11 @@ public class Card {
         this.type = type;
     }
     
+    public Card(Card card) {
+        this.value = card.getValue();
+        this.type = card.getType();
+    }
+    
     public void setValue(int value) {
         this.value = value;
     }
@@ -27,5 +32,14 @@ public class Card {
     
     public int getValue() {
         return this.value;
+    }
+    
+    public boolean isSmaller(Card card) {
+        if (this.type < card.getType())
+            return true;
+        if (this.type == card.getType()) 
+            if (this.value < card.getValue())
+                return true;
+        return false;
     }
 }
