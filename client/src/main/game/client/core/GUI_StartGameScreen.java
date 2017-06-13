@@ -688,28 +688,11 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     label_Introdution.setText("Waiting to start game");
                     server.send(solve.exchnageCard());
 
-                    // nhan data
-
-                    receiveDataAndAnalysis();
-                    boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
+                    receivedSTTPlay();
 
                     // cap nhat du lieu cho man hinh
-                    for (int i = 0; i < 13; ++i) {
+                    for (int i = 0; i < 13; ++i) 
                         cardsPlayingScreen.setCardsInScreen(i, solve.getCard(i));
-                        cardsPlayingScreen.getUICard(i).setEnabled(true);
-                    }
-
-                   
-                    // Neu client khong phai la nguoi danh bai dau tien thi enable cac la bai
-
-                    if (!isPlay)
-                        cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
-                    else 
-                        cardsPlayingScreen.setEnablePlayingCards(1, solve.getTypeOfCard(), solve.getCards());
-
-
-                    label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
-                    label_Introdution.setVisible(false);
                 }
 
                 GUI_StartGameScreen.isAccept += 1;
