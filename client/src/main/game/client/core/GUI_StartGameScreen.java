@@ -10,8 +10,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 
-
-
 public class GUI_StartGameScreen extends javax.swing.JFrame {
 
     private static String dataFromServer; 
@@ -19,11 +17,13 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private static Solve solve;
     private static int step;
     private static int isAccept;
-
+    
     
     
     private static UICards cardsPlayingScreen;
     private static UICards cardsPlayedScreen;
+    
+    private static ArrayList<JLabel> scoreUsers;
     
     
     
@@ -32,11 +32,11 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         
         this.settingPlayedCard();
         this.settingPlayingCard();
+        this.settingScore();
         
         // Set thong tin ban dau cho giao dien ./.
         
         GUI_StartGameScreen.isAccept = 0;
-        //GUI_StartGameScreen.isPlay = false;
         
         GUI_StartGameScreen.txt_Username.setVisible(false);
         GUI_StartGameScreen.label_Username_Login.setVisible(false);
@@ -52,6 +52,41 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     ////////////////////////           CAC HAM VIET THEM DE HO TRO XU LI SU KIEN           ////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     
+    public void login() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                if (GUI_StartGameScreen.txt_Username.getText().equals("")) {
+                    GUI_StartGameScreen.label_Message.setText("Please fill usernam. Try new name");
+                    return;
+                }
+                
+                GUI_StartGameScreen.server.send("Username-" + GUI_StartGameScreen.txt_Username.getText());
+                GUI_StartGameScreen.receiveDataAndAnalysis(); // Nhan du lieu tu server va phan tich xem do la thong tin gi (tra ra bien toan cuc step)
+
+                if (GUI_StartGameScreen.step == -2) {
+                    GUI_StartGameScreen.label_Message.setText("Username is duplicate. Try new name");
+                    GUI_StartGameScreen.label_Message.setVisible(true);
+                }
+                else if (GUI_StartGameScreen.step == 0) {
+
+                 // Set gia tri cho man hinh info
+
+                    GUI_StartGameScreen.solve.getInforOfUser(dataFromServer);
+                    label_Username_Info.setText(GUI_StartGameScreen.solve.getUser().getUserName());
+                    label_WinMatches.setText("Win matches: " + GUI_StartGameScreen.solve.getUser().getWinMatches());
+                    label_AllMatches.setText("All matches: " + GUI_StartGameScreen.solve.getUser().getMatches());
+
+                    // Hien thi man hinh ke tiep va tat man hinh cu
+
+                    playForm.setVisible(true);
+                    infoForm.setVisible(true);
+                    loginForm.hide();
+                }
+            } 
+        };
+        thread.start();
+    }
     
     /////////////////////// Setting cac bo bai hien thi tren giao dien //////////////////////////////////
     
@@ -77,7 +112,26 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     else if (step >= 3) {
                         Card card = playCard(e);
                         server.send("Card played-" + card.getValue() + " " + card.getType());
-                        System.out.println("Card played-" + card.getValue() + " " + card.getType());
+                    }
+                }
+                
+                @Override
+                public void mouseEntered(MouseEvent e) { // non hover
+                    JLabel cardHover = (JLabel)e.getSource();
+                    if (cardHover.isEnabled()) {
+                        cardHover.setLocation(cardHover.getLocation().x, cardHover.getLocation().y - 4);
+                        int index = findingIndexLabelInArray(cardHover);
+                        cardsPlayingScreen.setUICard(index, cardHover);
+                    }
+                }
+                
+                @Override
+                public void mouseExited(MouseEvent e) { // hover
+                    JLabel cardHover = (JLabel)e.getSource();
+                    if (cardHover.isEnabled()) {
+                        cardHover.setLocation(cardHover.getLocation().x, cardHover.getLocation().y + 4);
+                        int index = findingIndexLabelInArray(cardHover);
+                        cardsPlayingScreen.setUICard(index, cardHover);
                     }
                 }
 
@@ -91,7 +145,34 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         cardsPlayedScreen.addCards(label_Card16);cardsPlayedScreen.addCards(label_Card17);
     }
     
+    private void settingScore() {
+        scoreUsers = new ArrayList<>();
+        scoreUsers.add(label_ScorePlayer0); scoreUsers.add(label_ScorePlayer1);
+        scoreUsers.add(label_ScorePlayer2); scoreUsers.add(label_ScorePlayer3);
+    }
     
+    private void settingUserScoreInScreen() {
+        int j = 0;
+        String line = "";
+        String[] userNames = GUI_StartGameScreen.solve.receivedUsersFromServer(dataFromServer); // Nhan cac user tu server
+       
+        for (int i = 0; i < userNames.length; ++i) {
+            scoreUsers.get(i).setText(userNames[i].toUpperCase() + ": 0");
+            if (userNames[i].equals(solve.getUser().getUserName()))
+                j = i;
+        }
+        
+        for (int i = 0; i < solve.getUser().getUserName().length(); ++i)
+            line += "_";
+        
+        label_aboveline.setText(line);
+        label_belowline.setText(line);
+        
+        // set vi tri cho label line
+        
+        label_aboveline.setLocation(scoreUsers.get(j).getLocation().x,  label_aboveline.getLocation().y);
+        label_belowline.setLocation(scoreUsers.get(j).getLocation().x,  label_belowline.getLocation().y);
+    }
     
     ///////////////////// Cac ham ho tro hien thi bai len giao dien ////////////////////////////////////
     
@@ -99,8 +180,8 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private int findingIndexLabelInArray(JLabel label) {
         if (label.isEnabled()) {
             for (int i = 0; i < cardsPlayingScreen.getSize(); ++i)
-            if (cardsPlayingScreen.getUICard(i).equals(label))
-                return i;
+                if (cardsPlayingScreen.getUICard(i).equals(label))
+                    return i;
         }
         return -1;
     }
@@ -113,17 +194,21 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         cardsPlayingScreen.getUICard(N).setEnabled(false);
     }
     
+    private static boolean isLongerCard() {
+        if (cardsPlayingScreen.getUICard(0).getIcon() == null) 
+            return true;
+        return false;
+    }
+    
     private Card playCard(MouseEvent e) {
         int index = findingIndexLabelInArray((JLabel)e.getSource());
         Card card = solve.getCard(index);
-        
-        if (step == 2) // Buoc 2: trao doi bai
+
+        if (step == 2) { // th trao doi bai
             solve.getCardExchange().getCards().add(card);
-        
-        int indexOfScreen = solve.getCardExchange().getCards().size() - 1;
-        if (indexOfScreen < 0) indexOfScreen = 0;
-        
-        cardsPlayedScreen.setCardsInScreen(indexOfScreen, card);
+            int indexOfScreen = solve.getCardExchange().getCards().size() - 1;
+            cardsPlayedScreen.setCardsInScreen(indexOfScreen, card);
+        }
 
         //sap xep lai bai
         sortCard(index);
@@ -166,6 +251,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         button_Login = new javax.swing.JButton();
         label_Background_Login = new javax.swing.JLabel();
         infoForm = new javax.swing.JFrame();
+        jLabel1 = new javax.swing.JLabel();
         label_Username_Info = new javax.swing.JLabel();
         label_WinMatches = new javax.swing.JLabel();
         label_AllMatches = new javax.swing.JLabel();
@@ -174,7 +260,6 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         playForm = new javax.swing.JFrame();
         label_sttPlay = new javax.swing.JLabel();
         label_Introdution = new javax.swing.JLabel();
-        label_Score = new javax.swing.JLabel();
         label_Card1 = new javax.swing.JLabel();
         label_Card2 = new javax.swing.JLabel();
         label_Card3 = new javax.swing.JLabel();
@@ -192,6 +277,12 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         label_Card15 = new javax.swing.JLabel();
         label_Card16 = new javax.swing.JLabel();
         label_Card17 = new javax.swing.JLabel();
+        label_belowline = new javax.swing.JLabel();
+        label_aboveline = new javax.swing.JLabel();
+        label_ScorePlayer0 = new javax.swing.JLabel();
+        label_ScorePlayer1 = new javax.swing.JLabel();
+        label_ScorePlayer2 = new javax.swing.JLabel();
+        label_ScorePlayer3 = new javax.swing.JLabel();
         button_Accept_Next = new javax.swing.JButton();
         button_Exit = new javax.swing.JButton();
         label_Background_Play = new javax.swing.JLabel();
@@ -201,6 +292,12 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         loginForm.setTitle("Login");
         loginForm.setMinimumSize(new java.awt.Dimension(400, 400));
         loginForm.getContentPane().setLayout(null);
+
+        txt_Username.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txt_UsernameKeyPressed(evt);
+            }
+        });
         loginForm.getContentPane().add(txt_Username);
         txt_Username.setBounds(80, 160, 250, 30);
 
@@ -243,20 +340,25 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         infoForm.setMinimumSize(new java.awt.Dimension(400, 400));
         infoForm.getContentPane().setLayout(null);
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 0));
+        jLabel1.setText("__________");
+        infoForm.getContentPane().add(jLabel1);
+        jLabel1.setBounds(140, 120, 80, 14);
+
         label_Username_Info.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
-        label_Username_Info.setForeground(new java.awt.Color(255, 255, 255));
+        label_Username_Info.setForeground(new java.awt.Color(255, 255, 0));
         label_Username_Info.setText("Username");
         infoForm.getContentPane().add(label_Username_Info);
-        label_Username_Info.setBounds(140, 110, 110, 30);
+        label_Username_Info.setBounds(140, 100, 160, 30);
 
         label_WinMatches.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        label_WinMatches.setForeground(new java.awt.Color(255, 255, 255));
+        label_WinMatches.setForeground(new java.awt.Color(255, 255, 0));
         label_WinMatches.setText("Win matches: number");
         infoForm.getContentPane().add(label_WinMatches);
         label_WinMatches.setBounds(140, 160, 140, 15);
 
         label_AllMatches.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        label_AllMatches.setForeground(new java.awt.Color(255, 255, 255));
+        label_AllMatches.setForeground(new java.awt.Color(255, 255, 0));
         label_AllMatches.setText("All matches: number");
         infoForm.getContentPane().add(label_AllMatches);
         label_AllMatches.setBounds(140, 190, 130, 15);
@@ -278,7 +380,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             }
         });
         infoForm.getContentPane().add(button_Done);
-        button_Done.setBounds(130, 240, 100, 40);
+        button_Done.setBounds(140, 240, 100, 40);
 
         label_Background_Info.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/background_info.png"))); // NOI18N
         infoForm.getContentPane().add(label_Background_Info);
@@ -291,19 +393,13 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         label_sttPlay.setFont(new java.awt.Font("Tahoma", 2, 80)); // NOI18N
         label_sttPlay.setForeground(new java.awt.Color(255, 255, 0));
         playForm.getContentPane().add(label_sttPlay);
-        label_sttPlay.setBounds(590, 170, 60, 90);
+        label_sttPlay.setBounds(570, 160, 60, 100);
 
-        label_Introdution.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        label_Introdution.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         label_Introdution.setForeground(new java.awt.Color(255, 255, 0));
         label_Introdution.setText("Click \"Accept\" to start game");
         playForm.getContentPane().add(label_Introdution);
         label_Introdution.setBounds(480, 470, 210, 17);
-
-        label_Score.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        label_Score.setForeground(new java.awt.Color(255, 255, 0));
-        label_Score.setText("SCORE: 0");
-        playForm.getContentPane().add(label_Score);
-        label_Score.setBounds(50, 110, 150, 30);
 
         label_Card1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/00.png"))); // NOI18N
         playForm.getContentPane().add(label_Card1);
@@ -371,6 +467,40 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         playForm.getContentPane().add(label_Card17);
         label_Card17.setBounds(390, 250, 100, 140);
 
+        label_belowline.setForeground(new java.awt.Color(255, 255, 0));
+        label_belowline.setText("_________");
+        playForm.getContentPane().add(label_belowline);
+        label_belowline.setBounds(40, 140, 90, 20);
+
+        label_aboveline.setForeground(new java.awt.Color(255, 255, 0));
+        label_aboveline.setText("_________");
+        playForm.getContentPane().add(label_aboveline);
+        label_aboveline.setBounds(40, 100, 90, 20);
+
+        label_ScorePlayer0.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer0.setForeground(new java.awt.Color(255, 255, 0));
+        label_ScorePlayer0.setText("SCORE: 0");
+        playForm.getContentPane().add(label_ScorePlayer0);
+        label_ScorePlayer0.setBounds(40, 120, 110, 30);
+
+        label_ScorePlayer1.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer1.setForeground(new java.awt.Color(255, 255, 0));
+        label_ScorePlayer1.setText("SCORE: 0");
+        playForm.getContentPane().add(label_ScorePlayer1);
+        label_ScorePlayer1.setBounds(180, 120, 110, 30);
+
+        label_ScorePlayer2.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer2.setForeground(new java.awt.Color(255, 255, 0));
+        label_ScorePlayer2.setText("SCORE: 0");
+        playForm.getContentPane().add(label_ScorePlayer2);
+        label_ScorePlayer2.setBounds(310, 120, 110, 30);
+
+        label_ScorePlayer3.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer3.setForeground(new java.awt.Color(255, 255, 0));
+        label_ScorePlayer3.setText("SCORE: 0");
+        playForm.getContentPane().add(label_ScorePlayer3);
+        label_ScorePlayer3.setBounds(440, 120, 130, 30);
+
         button_Accept_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/accept_button.png"))); // NOI18N
         button_Accept_Next.setBorderPainted(false);
         button_Accept_Next.setContentAreaFilled(false);
@@ -388,7 +518,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             }
         });
         playForm.getContentPane().add(button_Accept_Next);
-        button_Accept_Next.setBounds(530, 310, 140, 60);
+        button_Accept_Next.setBounds(530, 300, 140, 60);
 
         button_Exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/exit_button.png"))); // NOI18N
         button_Exit.setBorderPainted(false);
@@ -402,7 +532,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             }
         });
         playForm.getContentPane().add(button_Exit);
-        button_Exit.setBounds(530, 380, 140, 60);
+        button_Exit.setBounds(530, 370, 140, 60);
 
         label_Background_Play.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/background_playgame.jpg"))); // NOI18N
         playForm.getContentPane().add(label_Background_Play);
@@ -470,40 +600,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_button_LoginMouseExited
 
     private void button_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_LoginActionPerformed
-        
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                if (GUI_StartGameScreen.txt_Username.getText().equals("")) {
-                    GUI_StartGameScreen.label_Message.setText("Please fill usernam. Try new name");
-                    return;
-                }
-                
-                GUI_StartGameScreen.server.send("Username-" + GUI_StartGameScreen.txt_Username.getText());
-                GUI_StartGameScreen.receiveDataAndAnalysis(); // Nhan du lieu tu server va phan tich xem do la thong tin gi (tra ra bien toan cuc step)
-
-                if (GUI_StartGameScreen.step == -2) {
-                    GUI_StartGameScreen.label_Message.setText("Username is duplicate. Try new name");
-                    GUI_StartGameScreen.label_Message.setVisible(true);
-                }
-                else if (GUI_StartGameScreen.step == 0) {
-
-                 // Set gia tri cho man hinh info
-
-                    GUI_StartGameScreen.solve.getInforOfUser(dataFromServer);
-                    label_Username_Info.setText(GUI_StartGameScreen.solve.getUser().getUserName());
-                    label_WinMatches.setText("Win matches: " + GUI_StartGameScreen.solve.getUser().getWinMatches());
-                    label_AllMatches.setText("All matches: " + GUI_StartGameScreen.solve.getUser().getMatches());
-
-                    // Hien thi man hinh ke tiep va tat man hinh cu
-
-                    playForm.setVisible(true);
-                    infoForm.setVisible(true);
-                    loginForm.hide();
-                }
-            } 
-        };
-        thread.start();
+        login();
     }//GEN-LAST:event_button_LoginActionPerformed
 
     
@@ -536,8 +633,10 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     GUI_StartGameScreen.server.send("Devide card"); // Server gui tin la: cho chia bai, client gui tin yeu cau chia bai
                     receiveDataAndAnalysis();
 
-                    GUI_StartGameScreen.solve.receivedCardFromServer(dataFromServer);
+                    GUI_StartGameScreen.solve.receivedCardFromServer(dataFromServer); // Nhan 13 la bai tu server
                     receiveCardAndShowScreen();
+                    
+                    settingUserScoreInScreen();
 
                     if (solve.getIsExchangeCard()) // Neu nhan duoc yeu cau trao doi bai tu server thi chuyen xuong isAccept = 1
                         label_Introdution.setText("Choose 3 cards to exchange");
@@ -570,13 +669,14 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                         cardsPlayingScreen.getUICard(i).setEnabled(true);
                     }
                     
-                    // Neu khong client khong phai la nguoi danh bai dau tien thi enable cac la bai
+                    // Neu client khong phai la nguoi danh bai dau tien thi enable cac la bai
                     if (!isPlay)
                         cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
-                    else
+                    else 
                         cardsPlayingScreen.setEnableForCards(1, solve.getTypeOfCard(), solve.getCards());
 
                     label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
+                    label_Introdution.setVisible(false);
                 }
 
                 GUI_StartGameScreen.isAccept += 1;
@@ -629,6 +729,11 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         GUI_StartGameScreen.server.close();
     }//GEN-LAST:event_formWindowClosed
 
+    private void txt_UsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_UsernameKeyPressed
+        if (evt.getKeyCode() == 10)
+            login();
+    }//GEN-LAST:event_txt_UsernameKeyPressed
+
     
   
     
@@ -660,34 +765,46 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         txt_Username.setVisible(true); button_Login.setVisible(true);
         label_Username_Login.setVisible(true); label_Message.setVisible(false);
         
-        Thread listenMSG;
-        listenMSG = new Thread(){
+        Thread listenMSG = new Thread(){
             @Override
             public void run() {
                 while (true) {
                     if (step >= 3) {
                         receiveDataAndAnalysis();
+                        
+                        if (dataFromServer.equals("end")) {
+                            isAccept = 0;
+                            step = 1;
+                            solve.reset();
+                            label_Introdution.setText("Click \"ACCEPT\" to start game");
+                            label_Introdution.setVisible(true);
+                            continue;
+                        }
+                        
                         ArrayList<Integer> result = solve.play(dataFromServer);
                         
                         cardsPlayingScreen.setEnableForCards(result.get(0), solve.getTypeOfCard(), solve.getCards());
                         cardsPlayedScreen.setCardsInScreen(solve.getCardsPlayed());
                         
                         if (result.size() > 1) {
-                            int score = -1;
-                            if (result.size() == 3) {//th: an diem 
-                                score = result.get(2) + Integer.parseInt(label_Score.getText().split(" ")[1]);
-                                JOptionPane.showMessageDialog(null, "Player " + result.get(1) + ": win points " + score);
-                            }
+                            if (result.size() == 4) { //th: an diem 
+                                String[] data = scoreUsers.get(result.get(2)).getText().split(" ");
+                                int score = score = result.get(3) + Integer.parseInt(data[1]);
+                                
+                                JOptionPane.showMessageDialog(null, "Player " + data[0].split(":")[0] + ": win points " + result.get(3));
+                                scoreUsers.get(result.get(2)).setText(data[0] + " " + score);
+                            } 
                             
-                            if (solve.getUser().getSttPlay() == result.get(1)) {
+                            if (solve.getUser().getSttPlay() == result.get(1)) 
                                 cardsPlayingScreen.setEnableForCards(0, solve.getTypeOfCard(), solve.getCards());
-                                if (score > -1)
-                                    label_Score.setText("SCORE: " + score);
-                            }
                             else
                                 cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
                             
+                            if (isLongerCard())
+                                server.send("end");
+                            
                             solve.updateOrderOfNewPlay(dataFromServer);
+                            solve.getCardsPlayed().deleteAll();
                             label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
                             cardsPlayedScreen.setCardsInScreenNull();
                         }
@@ -713,6 +830,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private static javax.swing.JButton button_Login;
     private javax.swing.JButton button_Start;
     private javax.swing.JFrame infoForm;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel label_AllMatches;
     private javax.swing.JLabel label_Background_Info;
     private javax.swing.JLabel label_Background_Login;
@@ -735,12 +853,17 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private javax.swing.JLabel label_Card7;
     private javax.swing.JLabel label_Card8;
     private javax.swing.JLabel label_Card9;
-    private javax.swing.JLabel label_Introdution;
+    private static javax.swing.JLabel label_Introdution;
     private static javax.swing.JLabel label_Message;
-    private static javax.swing.JLabel label_Score;
+    private static javax.swing.JLabel label_ScorePlayer0;
+    private javax.swing.JLabel label_ScorePlayer1;
+    private javax.swing.JLabel label_ScorePlayer2;
+    private javax.swing.JLabel label_ScorePlayer3;
     private javax.swing.JLabel label_Username_Info;
     private static javax.swing.JLabel label_Username_Login;
     private javax.swing.JLabel label_WinMatches;
+    private javax.swing.JLabel label_aboveline;
+    private javax.swing.JLabel label_belowline;
     private static javax.swing.JLabel label_sttPlay;
     private javax.swing.JFrame loginForm;
     private javax.swing.JFrame playForm;

@@ -1,5 +1,6 @@
 package game.server;
 
+import game.server.core.DataReceivedAnalysis;
 import java.util.ArrayList;
 
 import game.server.entity.Card;
@@ -12,8 +13,8 @@ public class Solve {
         ReceiveExchange,
         Normal
     }
-    private final UserManager userManager;
-    private final ExchangeCard exchangeCard;
+    private UserManager userManager;
+    private ExchangeCard exchangeCard;
     private ArrayList<ArrayList<Card>> card_13 = null; // Quan li 4 bo bai 13 la
     private ArrayList<Card> playedCard = null;
     private int exchangeCardTime; // Lan doi bai: co 4 lan doi bai
@@ -33,8 +34,8 @@ public class Solve {
     }
     
 
-    public String login(String userName) {
-        return this.userManager.login(userName);
+    public String login(String userName, int socket) {
+        return this.userManager.login(userName, socket);
     }
 
     private String createCard_Process() {
@@ -56,6 +57,14 @@ public class Solve {
             data += Cards.packedCardSToSendClient(cards);
         else
             data = Cards.packedCardSToSendClient(cards);
+        
+        data += "-";
+        for (int i = 0; i < this.userManager.size(); ++i) {
+            data += this.userManager.get(i).getUserName();
+            if (i != this.userManager.size() - 1)
+                data += " ";
+        }
+        
         return data;
     }
 
@@ -101,10 +110,18 @@ public class Solve {
         return result;
     }
     
+    public int findIndexOfUserWinPoint(int strIndex) {
+        for (int i = 0; i < this.userManager.size(); ++i)
+            if (this.userManager.get(i).getSocket() == strIndex)
+                return i;
+        return -1;
+    }
+    
     public String isWinPoints() {
         Card cardMax = this.playedCard.get(0);
         int index = 0, point = 0, Flag = 0;
         
+        // tim thu tu nguoi choi danh la bai lon nhat
         for (int i = 0; i < this.playedCard.size(); ++i) {
             if (Flag == 1) 
                 if (this.playedCard.get(i).getValue() == 12 && this.playedCard.get(i).getType() == 0)
@@ -121,11 +138,11 @@ public class Solve {
             }
         }
         
+        //xoa cac la bai da danh
         this.playedCard.removeAll(this.playedCard);
         System.out.println("INDEX     " + index);
         
         for (int i = 0; i < this.userManager.size(); ++i) {
-            //System.out.println("i     " + i + "++++" + this.userManager.get(i).getSttPlay());
             if (this.userManager.get(i).getSttPlay() == index) {
                 this.userManager.setStrIndex(i);
                 break;
@@ -149,13 +166,32 @@ public class Solve {
         if (point == 0)
             return "None win points-" + index + "-" + findNextPlay(index);
         
-        this.userManager.get(index).setPoint(point);
-        return "winpoint-" + index + " " + point + "-" + findNextPlay(index);
+        int userWinPoint = findIndexOfUserWinPoint(this.userManager.getStrIndex());
+        this.userManager.get(userWinPoint).setPoint(point);
+        
+        return "winpoint-" + index + " " + userWinPoint + 
+               " " + point + "-" + findNextPlay(index);
+    }
+    
+    
+    public void reset() {
+        flag = OnlyReceiveServerFlag.ReceiveAccept;
+        exchangeCard = new ExchangeCard();
+        userManager = new UserManager();
+        playedCard = new ArrayList<>();
+        DataReceivedAnalysis.state = 1; // quay ve buoc cho nhan accept
+        this.exchangeCardTime += 1;
+        if (this.exchangeCardTime == 4) this.exchangeCardTime = 0;
     }
     
     public String play(int indexOfClient, String dataFromClient) {
         String[] data = dataFromClient.split("-")[1].split(" ");
         String result = dataFromClient;
+        
+        if (dataFromClient.contains("end")) {
+            reset();
+            return "end";
+        }
         
         Card card = new Card(Integer.parseInt(data[0]), Integer.parseInt(data[1])); // Nhan bai duoc danh tu client va dua vao mang
         playedCard.add(card);
@@ -183,7 +219,7 @@ public class Solve {
     private String getData(int state, int indexOfClient, String dataFromClient) {
         switch (state) {
             case 0:  // Chiu trach nhiem login
-                return this.login(dataFromClient.split("-")[1]);
+                return this.login(dataFromClient.split("-")[1], indexOfClient);
             case 1: // Chiu trach nhiem lay accept va tao bo bai
                 return this.createCard_Process();
             case 2: // Chia bai cho client

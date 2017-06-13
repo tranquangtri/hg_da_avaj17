@@ -7,7 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 class MyThread {
-    private Thread thr;
+    private final Thread thr;
     private int index;
     
     public MyThread(int index, IClientManager clientManager, DataReceivedAnalysis dataAnalysis, Solve solve) {
@@ -17,11 +17,12 @@ class MyThread {
             public void run() {
                 while (true) {
                     String dataReceived = clientManager.receive(index);
-                    System.out.println("Client " + index + "--------" + dataReceived);
-
                     int state = dataAnalysis.resultAfterAnalysis(dataReceived);
-                    System.out.println("State login: " + state);
                     Result result = solve.solvingForServer(state, index, dataReceived);
+                    
+                    System.out.println("Client " + index + "--------" + dataReceived);
+                    System.out.println("State login: " + state);
+                    
                     clientManager.send(result.getIndex(), result.getMessage());
 
                     if (!result.getMessage().contains("Duplicate username")) {

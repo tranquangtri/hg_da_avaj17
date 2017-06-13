@@ -34,7 +34,7 @@ public class UICards {
     }
     
     public void setUICard(int index, JLabel card) {
-        this.uiCards.set(0, card);
+        this.uiCards.set(index, card);
     }
    
     

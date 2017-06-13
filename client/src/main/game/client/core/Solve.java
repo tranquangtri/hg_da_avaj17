@@ -18,7 +18,7 @@ public class Solve {
     private Cards cardsExchange = null;
     private Cards cardsPlayed = null;
     private boolean isExchangeCard; // kiem tra xem server co yeu cau client gui bai de trao doi khong
-     private int typeOfCard; // luu kieu cua la bai dau tien duoc danh ./.
+    private int typeOfCard; // luu kieu cua la bai dau tien duoc danh ./.
     
     public Solve() {
         this.user = new User();
@@ -125,9 +125,11 @@ public class Solve {
         String[] card = data[1].split(" ");
         
         ArrayList<Integer> result = new ArrayList<>();
-        this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
         
-        if (cardsPlayed.getCards().size() == 1)
+        if (this.cardsPlayed.getCards().size() != 4) // Chi them bai khi con it nhat 1 nguoi chua danh
+            this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
+       
+        if (cardsPlayed.getCards().size() == 1) // Neu la la bai dau tien thi luu lai kieu cua la bai
             this.typeOfCard = Integer.parseInt(card[1]);
         
         if (this.user.getSttPlay() == Integer.parseInt(data[2])) 
@@ -135,29 +137,26 @@ public class Solve {
         else
             result.add(-1);
         
-        if (data.length == 6) { // cac buoc cap nhat man hinh sau khi 4 player da danh bai se lam ben gui
+        if (data.length == 6) { // cac buoc cap nhat man hinh sau khi 4 player da danh bai se lam ben GUI
             if (data[3].contains("winpoint")) { // tra ra ben ngoai index cua player an diem va diem
                 String[] dat = data[4].split(" ");
-                result.add(Integer.parseInt(dat[0])); result.add(Integer.parseInt(dat[1]));
+                result.add(Integer.parseInt(dat[0]));
+                result.add(Integer.parseInt(dat[1]));
+                result.add(Integer.parseInt(dat[2]));
             }
             else 
                 result.add(Integer.parseInt(data[4]));
-            this.cardsPlayed.deleteAll();
         }
         return result;
     }
     
-    public int[] isWinPoints(String dataReceived) {
-        String[] data = dataReceived.split("-");
-        if (data.length == 4) {
-            if (data[2].contains("winpoint")) {
-                String[] dat = data[3].split(" ");
-                int[] result = {Integer.parseInt(dat[0]), Integer.parseInt(dat[1])};
-                return result;
-            }
-        }
-        return null;
+    public void reset() {
+        this.cards = new Cards();
+        this.cardsPlayed = new Cards();
+        this.isExchangeCard = false;
+        this.typeOfCard = -1;
     }
+   
     
     public boolean receiveSTTPlayAndExchangeCardIfHaving(String dataReceived) {
         String[] data = dataReceived.split("-");
@@ -181,6 +180,10 @@ public class Solve {
             this.cardsExchange = new Cards(null);
         }
         return !this.cards.getCards().isEmpty();
+    }
+    
+    public String[] receivedUsersFromServer(String dataReceived) {
+        return dataReceived.split("-")[2].split(" ");
     }
    
 }

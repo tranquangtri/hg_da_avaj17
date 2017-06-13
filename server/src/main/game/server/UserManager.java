@@ -44,13 +44,13 @@ class UserManager{
         return false;
     } // Kiem tra user co bi trung khong
     
-    public String login(String userName){
+    public String login(String userName, int socket){
         DataConnection con = new DataConnection();
         User user = con.getUserIfHaving(userName);
         String dataSendClient = "";
 
         if (user.isEmptyUser()) {
-            if (con.insert(userName, 0, 0) != false) {} // tao user moi nhung user do da co nguoi ta
+            if (con.insert(userName, 0, 0) != false) {} // tao user moi nhung user do da co nguoi tao
             else
                 return "Duplicate username";
             user = new User(userName, 0, 0, 0);
@@ -60,8 +60,10 @@ class UserManager{
 
         dataSendClient =  userName + " " + user.getMatches() + " " + user.getWinMatches() + "-should click 'ACCEPT' to start game" ;
 
+        user.setSocket(socket);
         this.users.add(user);
         con.freeConnection();
+        
         return dataSendClient;
     }
     
