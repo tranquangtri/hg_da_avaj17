@@ -106,10 +106,13 @@ final class ExchangeCard{
      */
     public int find2ClubIfHaving() {
         for (int i = 0; i < this.exchangeCard.size(); ++i) {
-            String[] data = this.exchangeCard.get(i).split("-")[1].split(" ");
-            for (int j = 0; j < data.length; ++j)
-                if ("2".equals(data[j]) && (j % 2 == 0) && "1".equals(data[j + 1]))
-                    return i;
+            try {
+                String[] data = this.exchangeCard.get(i).split("-")[1].split(" ");
+                for (int j = 0; j < data.length; ++j)
+                    if ("2".equals(data[j]) && (j % 2 == 0) && "1".equals(data[j + 1]))
+                        return i;
+            }
+            catch (Exception ex) {break;}
         }
         return -1;
     }

@@ -99,8 +99,12 @@ public class RoutineServer implements IClientHandler{
 
                         if (DataReceivedAnalysis.state < 3) // Đang là bước nhận  3 lá bài từ client => nhận đủ mới send
                             clientManager.send(i, result.getMessage());
-                        if (DataReceivedAnalysis.state > 4)
+                        if (DataReceivedAnalysis.state > 4) {
                             clientManager.sendAll(result.getMessage());
+                            if (result.getMessage().contains(" end"))
+                                solve.reset();
+                        }
+                        //clientManager.sendAll("should click 'ACCEPT' to start game");
 
                     }
                     else { // State = 4 (nhận đủ bài) => gửi tin cho client

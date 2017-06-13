@@ -110,10 +110,12 @@ public class Solve {
     
     public void updateOrderOfNewPlay(String dataReceived) {
         String[] data = dataReceived.split("-");
-        System.out.println("Data5 " + data[5]);
         String[] dat = data[5].split(" ");
+        
+        int N = dat.length == 9 ? dat.length - 1 : dat.length;
+        System.out.println("Data5 " + data[5]);
 
-        for (int i = 0; i < dat.length; i += 2)
+        for (int i = 0; i < N; i += 2)
             if (Integer.parseInt(dat[i]) == this.user.getSttPlay()) {
                 this.user.setSttPlay(Integer.parseInt(dat[i + 1]));
                 break;
@@ -160,16 +162,20 @@ public class Solve {
     
     public boolean receiveSTTPlayAndExchangeCardIfHaving(String dataReceived) {
         String[] data = dataReceived.split("-");
-        String[] dat = data[3].split(" ");
-            
-        for (int i = 0; i < dat.length; ++i) 
-            this.cards.add(Integer.parseInt(dat[i]), Integer.parseInt(dat[++i]));
-       
-        this.cards.sortCard(true);
-        this.user.setSttPlay(Integer.parseInt(data[1]));
-        this.cardsExchange.deleteAll();
         
-        return data.length == 5;
+        try {
+            String[] dat = data[3].split(" ");
+
+            for (int i = 0; i < dat.length; ++i) 
+                this.cards.add(Integer.parseInt(dat[i]), Integer.parseInt(dat[++i]));
+
+            this.cards.sortCard(true);
+            this.cardsExchange.deleteAll();
+        }
+        catch(Exception ex){}
+        
+        this.user.setSttPlay(Integer.parseInt(data[1]));
+        return dataReceived.contains("-start");
     }
     
     public boolean receivedCardFromServer(String dataReceived) {

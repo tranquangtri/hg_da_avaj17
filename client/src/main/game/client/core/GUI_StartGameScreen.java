@@ -111,7 +111,12 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     
                     else if (step >= 3) {
                         Card card = playCard(e);
-                        server.send("Card played-" + card.getValue() + " " + card.getType());
+                        if (card != null) {
+                            if (isLongerCard() == true && solve.getCardsPlayed().getCards().size() == 3)
+                                server.send("Card played-" + card.getValue() + " " + card.getType() + "-end");
+                            else
+                                server.send("Card played-" + card.getValue() + " " + card.getType());
+                        }
                     }
                 }
                 
@@ -119,7 +124,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                 public void mouseEntered(MouseEvent e) { // non hover
                     JLabel cardHover = (JLabel)e.getSource();
                     if (cardHover.isEnabled()) {
-                        cardHover.setLocation(cardHover.getLocation().x, cardHover.getLocation().y - 4);
+                        cardHover.setLocation(cardHover.getLocation().x, 506);
                         int index = findingIndexLabelInArray(cardHover);
                         cardsPlayingScreen.setUICard(index, cardHover);
                     }
@@ -129,7 +134,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                 public void mouseExited(MouseEvent e) { // hover
                     JLabel cardHover = (JLabel)e.getSource();
                     if (cardHover.isEnabled()) {
-                        cardHover.setLocation(cardHover.getLocation().x, cardHover.getLocation().y + 4);
+                        cardHover.setLocation(cardHover.getLocation().x, 510);
                         int index = findingIndexLabelInArray(cardHover);
                         cardsPlayingScreen.setUICard(index, cardHover);
                     }
@@ -152,6 +157,10 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     }
     
     private void settingUserScoreInScreen() {
+        
+        if (!scoreUsers.get(0).getText().contains("SCORE: 0"))
+            return;
+        
         int j = 0;
         String line = "";
         String[] userNames = GUI_StartGameScreen.solve.receivedUsersFromServer(dataFromServer); // Nhan cac user tu server
@@ -202,8 +211,12 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     
     private Card playCard(MouseEvent e) {
         int index = findingIndexLabelInArray((JLabel)e.getSource());
-        Card card = solve.getCard(index);
-
+        
+        if (index == -1)
+            return null;
+        
+        Card card = card = solve.getCard(index);;
+        
         if (step == 2) { // th trao doi bai
             solve.getCardExchange().getCards().add(card);
             int indexOfScreen = solve.getCardExchange().getCards().size() - 1;
@@ -226,6 +239,22 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         
         System.out.println(dataFromServer);
         System.out.println(step);
+    }
+    
+    private static void receivedSTTPlay() {
+        // nhan data
+        receiveDataAndAnalysis();
+        boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
+        
+         // Neu client khong phai la nguoi danh bai dau tien thi enable cac la bai
+        if (!isPlay)
+            cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
+        else 
+            cardsPlayingScreen.setEnablePlayingCards(1, solve.getTypeOfCard(), solve.getCards());
+        
+
+        label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
+        label_Introdution.setVisible(false);
     }
     
     private void receiveCardAndShowScreen() {
@@ -643,6 +672,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     else { // Neu khong nhan duoc yeu cau trao doi bai thi yeu cau server gui thu tu choi 
                         label_Introdution.setText("Waiting to start game");
                         server.send("SttPlay");
+                        receivedSTTPlay();
                     }
                 }
                 else if (GUI_StartGameScreen.isAccept == 1) {
@@ -653,27 +683,30 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
                     // set icon cho bai da gui di = trong
                     cardsPlayedScreen.setCardsInScreenNull();
-
+                    
                     // send data
                     label_Introdution.setText("Waiting to start game");
                     server.send(solve.exchnageCard());
 
                     // nhan data
+
                     receiveDataAndAnalysis();
                     boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
-                    
 
                     // cap nhat du lieu cho man hinh
                     for (int i = 0; i < 13; ++i) {
                         cardsPlayingScreen.setCardsInScreen(i, solve.getCard(i));
                         cardsPlayingScreen.getUICard(i).setEnabled(true);
                     }
-                    
+
+                   
                     // Neu client khong phai la nguoi danh bai dau tien thi enable cac la bai
+
                     if (!isPlay)
-                        cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
+                        cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
                     else 
-                        cardsPlayingScreen.setEnableForCards(1, solve.getTypeOfCard(), solve.getCards());
+                        cardsPlayingScreen.setEnablePlayingCards(1, solve.getTypeOfCard(), solve.getCards());
+
 
                     label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
                     label_Introdution.setVisible(false);
@@ -771,42 +804,38 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                 while (true) {
                     if (step >= 3) {
                         receiveDataAndAnalysis();
-                        
-                        if (dataFromServer.equals("end")) {
-                            isAccept = 0;
-                            step = 1;
-                            solve.reset();
-                            label_Introdution.setText("Click \"ACCEPT\" to start game");
-                            label_Introdution.setVisible(true);
-                            continue;
-                        }
-                        
                         ArrayList<Integer> result = solve.play(dataFromServer);
-                        
-                        cardsPlayingScreen.setEnableForCards(result.get(0), solve.getTypeOfCard(), solve.getCards());
+
+                        cardsPlayingScreen.setEnablePlayingCards(result.get(0), solve.getTypeOfCard(), solve.getCards());
                         cardsPlayedScreen.setCardsInScreen(solve.getCardsPlayed());
-                        
+
                         if (result.size() > 1) {
                             if (result.size() == 4) { //th: an diem 
                                 String[] data = scoreUsers.get(result.get(2)).getText().split(" ");
                                 int score = score = result.get(3) + Integer.parseInt(data[1]);
-                                
-                                JOptionPane.showMessageDialog(null, "Player " + data[0].split(":")[0] + ": win points " + result.get(3));
+                               // JOptionPane.showMessageDialog(null, "Player " + data[0].split(":")[0] + ": win points " + result.get(3));
                                 scoreUsers.get(result.get(2)).setText(data[0] + " " + score);
                             } 
-                            
+
                             if (solve.getUser().getSttPlay() == result.get(1)) 
-                                cardsPlayingScreen.setEnableForCards(0, solve.getTypeOfCard(), solve.getCards());
+                                cardsPlayingScreen.setEnablePlayingCards(0, solve.getTypeOfCard(), solve.getCards());
                             else
-                                cardsPlayingScreen.setEnableForCards(-1, solve.getTypeOfCard(), null);
-                            
-                            if (isLongerCard())
-                                server.send("end");
-                            
+                                cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
+
                             solve.updateOrderOfNewPlay(dataFromServer);
                             solve.getCardsPlayed().deleteAll();
                             label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
                             cardsPlayedScreen.setCardsInScreenNull();
+                            
+                            if (dataFromServer.contains(" end")) {
+                                isAccept = 0;
+                                step = 1; DataReceivedAnalysis.state = 1;
+                                solve.reset();
+                                cardsPlayingScreen.setEnableForAllCards(true);
+                                label_sttPlay.setText("");
+                                label_Introdution.setText("Click \"ACCEPT\" to start game");
+                                label_Introdution.setVisible(true);
+                            }
                         }
                     }
                     else {

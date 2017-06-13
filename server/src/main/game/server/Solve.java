@@ -175,23 +175,24 @@ public class Solve {
     
     
     public void reset() {
-        flag = OnlyReceiveServerFlag.ReceiveAccept;
-        exchangeCard = new ExchangeCard();
-        userManager = new UserManager();
-        playedCard = new ArrayList<>();
-        DataReceivedAnalysis.state = 1; // quay ve buoc cho nhan accept
-        this.exchangeCardTime += 1;
-        if (this.exchangeCardTime == 4) this.exchangeCardTime = 0;
+        try {
+            flag = OnlyReceiveServerFlag.ReceiveAccept;
+            exchangeCard = new ExchangeCard();
+            playedCard = new ArrayList<>();
+            DataReceivedAnalysis.state = 0; // quay ve buoc cho nhan accept, nhung do ben RoutineServer se + them 1 nen ta set o day = 0
+            
+            this.exchangeCardTime += 1;
+            if (this.exchangeCardTime == 4) this.exchangeCardTime = 0;
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
     
-    public String play(int indexOfClient, String dataFromClient) {
+    public String play(String dataFromClient) {
+        
         String[] data = dataFromClient.split("-")[1].split(" ");
         String result = dataFromClient;
-        
-        if (dataFromClient.contains("end")) {
-            reset();
-            return "end";
-        }
         
         Card card = new Card(Integer.parseInt(data[0]), Integer.parseInt(data[1])); // Nhan bai duoc danh tu client va dua vao mang
         playedCard.add(card);
@@ -201,8 +202,13 @@ public class Solve {
         else
             result += "-" + (countFeedback + 1);
         
-        if (playedCard.size() == 4)
+        if (playedCard.size() == 4) {
             result += "-" + isWinPoints();
+            if (dataFromClient.contains("-end")) {
+                String[] tmp = result.split("-end");
+                result = tmp[0] + tmp[1] + " end";
+            }
+        }
      
         return result;
     }
@@ -229,7 +235,7 @@ public class Solve {
             case 4:  // Gui thu tu choi va bai sau khi duoc doi cho client
                 return sendOrderPlayn3CardIfHave_Process(indexOfClient);
             case 5: 
-                return play(indexOfClient, dataFromClient);
+                return play(dataFromClient);
             default:
                 throw new IllegalArgumentException("0,1,2,3,4");
         }

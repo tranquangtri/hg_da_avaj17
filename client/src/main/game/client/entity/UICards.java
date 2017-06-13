@@ -66,7 +66,7 @@ public class UICards {
             uiCards.get(i).setIcon(null);
     }
     
-    public void setEnableForCards(int isEnable, int typeOfCard, Cards cards) {
+    public void setEnablePlayingCards(int isEnable, int typeOfCard, Cards cards) {
         if (isEnable == -1) {
             for (int i = 0; i < this.uiCards.size(); ++i)
                 this.uiCards.get(i).setEnabled(false);
@@ -92,6 +92,11 @@ public class UICards {
                         this.uiCards.get(i).setEnabled(true);
             }
         }
+    }
+    
+    public void setEnableForAllCards(boolean isEnable) {
+        for (int i = 0; i < this.uiCards.size(); ++i)
+            this.uiCards.get(i).setEnabled(isEnable);
     }
      
 }
