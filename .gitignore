@@ -16,3 +16,5 @@ report/_latex
 
 # bash file
 *.bat
+.gradle*
+.*
