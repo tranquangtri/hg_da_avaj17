@@ -65,28 +65,12 @@ public class Cards {
         return this.cards;
     }
     
-    public ArrayList<ArrayList<Card>> divideCards(ArrayList<Card> card_52) {
-        int j = 0;
-        ArrayList<ArrayList<Card>> card_13 = new ArrayList<>();
-        
-        for (int i = 0; i < 4; ++i)
-            card_13.add(new ArrayList<>());
-        
-        for (int i = 0; i < card_52.size(); ++i) {
-            if (j == 4) j = 0;
-            card_13.get(j++).add(card_52.get(i));
-        }
-        
-        return card_13;
-    }
-    
     public int find2ClubIn1Cards(Cards card) {
         for (int i = 0; i < card.getCards().size(); ++i)
             if (card.getCards().get(i).getValue() == 2 && card.getCards().get(i).getType() == 1)
                 return i;
         return -1;
     }
-    
     
     public void sortCard(boolean isAddCard) {
         if (isAddCard)

@@ -107,6 +107,8 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     
                     if (step == 2 && solve.getCardExchange().getCards().size() != 3) {
                         playCard(e);
+                        for (int i = 0; i < cardsPlayingScreen.getSize(); ++i)
+                            cardsPlayingScreen.getUICard(i).setLocation(cardsPlayingScreen.getUICard(i).getLocation().x, 510);
                     }
                     
                     else if (step >= 3) {
@@ -116,6 +118,8 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                                 server.send("Card played-" + card.getValue() + " " + card.getType() + "-end");
                             else
                                 server.send("Card played-" + card.getValue() + " " + card.getType());
+                            for (int i = 0; i < cardsPlayingScreen.getSize(); ++i)
+                                cardsPlayingScreen.getUICard(i).setLocation(cardsPlayingScreen.getUICard(i).getLocation().x, 510);
                         }
                     }
                 }
@@ -248,9 +252,9 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         
          // Neu client khong phai la nguoi danh bai dau tien thi enable cac la bai
         if (!isPlay)
-            cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
+            cardsPlayingScreen.setEnableForAllCards(false);
         else 
-            cardsPlayingScreen.setEnablePlayingCards(1, solve.getTypeOfCard(), solve.getCards());
+            cardsPlayingScreen.setEnablePlayingCards(null, solve.getCards());
         
 
         label_sttPlay.setText(Integer.toString(solve.getUser().getSttPlay()));
@@ -506,25 +510,25 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         playForm.getContentPane().add(label_aboveline);
         label_aboveline.setBounds(40, 100, 90, 20);
 
-        label_ScorePlayer0.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer0.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
         label_ScorePlayer0.setForeground(new java.awt.Color(255, 255, 0));
         label_ScorePlayer0.setText("SCORE: 0");
         playForm.getContentPane().add(label_ScorePlayer0);
         label_ScorePlayer0.setBounds(40, 120, 110, 30);
 
-        label_ScorePlayer1.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer1.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
         label_ScorePlayer1.setForeground(new java.awt.Color(255, 255, 0));
         label_ScorePlayer1.setText("SCORE: 0");
         playForm.getContentPane().add(label_ScorePlayer1);
         label_ScorePlayer1.setBounds(180, 120, 110, 30);
 
-        label_ScorePlayer2.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer2.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
         label_ScorePlayer2.setForeground(new java.awt.Color(255, 255, 0));
         label_ScorePlayer2.setText("SCORE: 0");
         playForm.getContentPane().add(label_ScorePlayer2);
         label_ScorePlayer2.setBounds(310, 120, 110, 30);
 
-        label_ScorePlayer3.setFont(new java.awt.Font("Tahoma", 3, 14)); // NOI18N
+        label_ScorePlayer3.setFont(new java.awt.Font("Tahoma", 3, 12)); // NOI18N
         label_ScorePlayer3.setForeground(new java.awt.Color(255, 255, 0));
         label_ScorePlayer3.setText("SCORE: 0");
         playForm.getContentPane().add(label_ScorePlayer3);
@@ -789,23 +793,26 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                         receiveDataAndAnalysis();
                         ArrayList<Integer> result = solve.play(dataFromServer);
 
-                        cardsPlayingScreen.setEnablePlayingCards(result.get(0), solve.getTypeOfCard(), solve.getCards());
+                        if (result.get(0) == 0)
+                            cardsPlayingScreen.setEnablePlayingCards(solve.getCardsPlayed().getCards().get(0), solve.getCards());
+                        else cardsPlayingScreen.setEnableForAllCards(false);
+                        
                         cardsPlayedScreen.setCardsInScreen(solve.getCardsPlayed());
 
                         if (result.size() > 1) {
-                            if (result.size() == 4) { //th: an diem 
+                            if (result.size() >= 4) { //th: an diem 
                                 String[] data = scoreUsers.get(result.get(2)).getText().split(" ");
                                 int score = score = result.get(3) + Integer.parseInt(data[1]);
-                               // JOptionPane.showMessageDialog(null, "Player " + data[0].split(":")[0] + ": win points " + result.get(3));
                                 scoreUsers.get(result.get(2)).setText(data[0] + " " + score);
-                            } 
-
-                            if (solve.getUser().getSttPlay() == result.get(1)) {
-                                solve.setTypeOfCard(-1);
-                                cardsPlayingScreen.setEnablePlayingCards(0, solve.getTypeOfCard(), solve.getCards());
+                                
+                                if (result.size() == 5)
+                                    JOptionPane.showMessageDialog(null, "Player " + scoreUsers.get(result.get(4)).getText().split(":")[0] + "win game ");
                             }
-                            else
-                                cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
+                            
+
+                            if (solve.getUser().getSttPlay() == result.get(1)) 
+                                cardsPlayingScreen.setEnablePlayingCardsForUserWin(solve.getBreakingHeart(), solve.getCards());
+                            else cardsPlayingScreen.setEnableForAllCards(false);
 
                             solve.updateOrderOfNewPlay(dataFromServer);
                             solve.getCardsPlayed().deleteAll();
@@ -817,6 +824,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                                 step = 1; DataReceivedAnalysis.state = 1;
                                 solve.reset();
                                 cardsPlayingScreen.setEnableForAllCards(true);
+                                cardsPlayingScreen.setCardsBeforePlay();
                                 label_sttPlay.setText("");
                                 label_Introdution.setText("Click \"ACCEPT\" to start game");
                                 label_Introdution.setVisible(true);

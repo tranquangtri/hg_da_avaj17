@@ -44,7 +44,7 @@ public class User {
     }
     
     public void setPoint(int point) {
-        this.point += point;
+        this.point = point;
     }
     
     public void setSocket(int socket) {
@@ -74,6 +74,18 @@ public class User {
     
     public int getSocket() {
         return this.socket;
+    }
+    
+    public void plusPoint(int point) {
+        this.point += point;
+    }
+    
+    public void plusWinMatch() {
+        this.winMatches += 1;
+    }
+    
+    public void plusMatch() {
+        this.matches += 1;
     }
     
     public Boolean isEmptyUser() {

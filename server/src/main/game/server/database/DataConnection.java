@@ -26,6 +26,7 @@ public class DataConnection {
     public void setConnection(Connection con){
         this.con = con;
     }
+    
     public DataConnection() {
         con = null;
         Properties properties = new Properties();

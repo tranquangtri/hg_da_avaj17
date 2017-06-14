@@ -50,47 +50,62 @@ public class UICards {
     
     
     public void setCardsInScreen(int index, Card card) {
-        uiCards.get(index).setIcon(new ImageIcon(getClass().getResource(imagePath(card.getValue(), card.getType()))));
+        this.uiCards.get(index).setIcon(new ImageIcon(getClass().getResource(imagePath(card.getValue(), card.getType()))));
     }
     
     public void setCardsInScreen(Cards cards) {
         for (int i = 0; i < cards.getCards().size(); ++i) {
             Icon icon = new ImageIcon(getClass().getResource(imagePath(cards.getCards().get(i).getValue(), cards.getCards().get(i).getType())));
-            if (uiCards.get(i).getIcon() != icon)
-                uiCards.get(i).setIcon(icon);
+            if (this.uiCards.get(i).getIcon() != icon)
+                this.uiCards.get(i).setIcon(icon);
         }
     }
     
     public void setCardsInScreenNull() {
-        for (int i = 0; i < uiCards.size(); ++i)
-            uiCards.get(i).setIcon(null);
+        for (int i = 0; i < this.uiCards.size(); ++i)
+            this.uiCards.get(i).setIcon(null);
     }
     
-    public void setEnablePlayingCards(int isEnable, int typeOfCard, Cards cards) {
-        if (isEnable == -1) {
-            for (int i = 0; i < this.uiCards.size(); ++i)
-                this.uiCards.get(i).setEnabled(false);
+    public void setEnablePlayingCards(Card firstCard, Cards cards) {
+        int index = cards.find2ClubIn1Cards(cards);
+        if (index != -1) { // th tim thay 2 chuong trong bo bai
+            for (int i = 0; i < cards.getCards().size(); ++i) 
+                if (i != index) this.uiCards.get(i).setEnabled(false);
         }
-        else {
-            int index = cards.find2ClubIn1Cards(cards);
-            if (index != -1) {
-                for (int i = 0; i < cards.getCards().size(); ++i) {
-                    if (i != index)
-                        this.uiCards.get(i).setEnabled(false);
+        else { // th khong tim thay 2 chuong trong bo bai
+            // tim trong bo bai hien tai cua player co co bai nao trung voi bai cua player 1 danh khong, co thi enable no,
+            // khong thi unenable
+            int flag = 0;
+            for (int i = 0; i < cards.getCards().size(); ++i) { 
+                if (cards.getCards().get(i).getType() == firstCard.getType()) {
+                    this.uiCards.get(i).setEnabled(true);
+                    flag = 1;
                 }
             }
-            else {
-                int flag = 0;
+            // Khong tim thay la bai nao co kieu trung voi la bai cua player 1 danh
+            if (flag == 0)
                 for (int i = 0; i < cards.getCards().size(); ++i) {
-                    if (cards.getCards().get(i).getType() == typeOfCard) {
-                        this.uiCards.get(i).setEnabled(true);
-                        flag = 1;
+                    if (firstCard.getValue() == 2 && firstCard.getType() == 1) {
+                        if (cards.getCards().get(i).getType() == 3 || (cards.getCards().get(i).getValue()== 12 && cards.getCards().get(i).getType() == 0)) {
+                            this.uiCards.get(i).setEnabled(false);
+                            continue;
+                        }
                     }
+                    this.uiCards.get(i).setEnabled(true);
                 }
-                if (flag == 0)
-                    for (int i = 0; i < cards.getCards().size(); ++i)
-                        this.uiCards.get(i).setEnabled(true);
-            }
+        }
+    }
+    
+    public void setEnablePlayingCardsForUserWin(boolean isBreakingHeart, Cards cards) {
+        int endIndex = cards.getCards().size() - 1;
+        
+        if (endIndex != -1 && cards.getCards().get(endIndex).getType() == 3)
+            isBreakingHeart = true;
+        
+        for (int i = 0; i < cards.getCards().size(); ++i) {
+            if (isBreakingHeart == false && cards.getCards().get(i).getType() == 3)
+                this.uiCards.get(i).setEnabled(false);
+            else this.uiCards.get(i).setEnabled(true);
         }
     }
     
@@ -99,4 +114,8 @@ public class UICards {
             this.uiCards.get(i).setEnabled(isEnable);
     }
      
+    public void setCardsBeforePlay() {
+        for (int i = 0; i < this.uiCards.size(); ++i)
+            this.uiCards.get(i).setIcon(new ImageIcon(getClass().getResource(imagePath(0, 0))));
+    }
 }

@@ -18,14 +18,15 @@ public class Solve {
     private Cards cardsExchange = null;
     private Cards cardsPlayed = null;
     private boolean isExchangeCard; // kiem tra xem server co yeu cau client gui bai de trao doi khong
-    private int typeOfCard; // luu kieu cua la bai dau tien duoc danh ./.
+    private boolean breakingHeart;
     
     public Solve() {
         this.user = new User();
         this.cards = new Cards();
         this.cardsPlayed = new Cards();
         this.isExchangeCard = false;
-        this.typeOfCard = -1;
+        //this.typeOfCard = -1;
+        this.breakingHeart = false;
     }
     
     
@@ -56,8 +57,13 @@ public class Solve {
     public void getInforOfUser(String dataReceived) {
          String[] str = dataReceived.split("-")[0].split(" ");
          this.user.setUserName(str[0]);
-         this.user.setwinMathces(Integer.parseInt(str[1]));
-         this.user.setMatches(Integer.parseInt(str[2]));
+         this.user.setwinMathces(Integer.parseInt(str[2]));
+         this.user.setMatches(Integer.parseInt(str[1]));
+    }
+
+    
+    public boolean getBreakingHeart() {
+        return this.breakingHeart;
     }
     
     
@@ -77,14 +83,11 @@ public class Solve {
         this.cardsExchange = cardsExchange;
     }
     
-    public void setTypeOfCard(int type) {
-        this.typeOfCard = type;
-    }
      
-     
-    public int getTypeOfCard() {
-        return this.typeOfCard;
+    public void setBreakingHeart(boolean breaking) {
+        this.breakingHeart = breaking;
     }
+    
     
     
     
@@ -112,6 +115,9 @@ public class Solve {
         String[] data = dataReceived.split("-");
         String[] dat = data[5].split(" ");
         
+        if (dataReceived.contains("wingame ")) // truong hop thang game thi khong can cap nhat lai thu tu choi
+            return;
+        
         int N = dat.length == 9 ? dat.length - 1 : dat.length;
         System.out.println("Data5 " + data[5]);
 
@@ -131,23 +137,28 @@ public class Solve {
         if (this.cardsPlayed.getCards().size() != 4) // Chi them bai khi con it nhat 1 nguoi chua danh
             this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
        
-        if (cardsPlayed.getCards().size() == 1) // Neu la la bai dau tien thi luu lai kieu cua la bai
-            this.typeOfCard = Integer.parseInt(card[1]);
         
-        if (this.user.getSttPlay() == Integer.parseInt(data[2])) 
+        String[] sttPlayAndBreakingHeart = data[2].split(" "); // Lay luot choi va bien xac dinh tim vo chua
+        this.breakingHeart = Integer.parseInt(sttPlayAndBreakingHeart[1]) == 1; // set tim vo da vo hay chua
+       
+        
+        if (this.user.getSttPlay() == Integer.parseInt(sttPlayAndBreakingHeart[0])) 
             result.add(0);
         else
             result.add(-1);
         
         if (data.length == 6) { // cac buoc cap nhat man hinh sau khi 4 player da danh bai se lam ben GUI
-            if (data[3].contains("winpoint")) { // tra ra ben ngoai index cua player an diem va diem
-                String[] dat = data[4].split(" ");
-                result.add(Integer.parseInt(dat[0]));
-                result.add(Integer.parseInt(dat[1]));
-                result.add(Integer.parseInt(dat[2]));
+            String[] dat = data[4].split(" "); // tra ra ben ngoai index cua player an diem va diem
+            if (data[3].contains("winpoint")) {
+                result.add(Integer.parseInt(dat[0])); // vi tri se duoc danh bai ke tiep
+                result.add(Integer.parseInt(dat[1])); // vi tri cua user an diem
+                result.add(Integer.parseInt(dat[2])); // diem ma user co duoc
+                
+                if (data[5].contains("wingame"))
+                    result.add(Integer.parseInt(data[5].split("wingame")[1].split(" ")[1]));
             }
             else 
-                result.add(Integer.parseInt(data[4]));
+                result.add(Integer.parseInt(dat[0]));
         }
         return result;
     }
@@ -156,7 +167,7 @@ public class Solve {
         this.cards = new Cards();
         this.cardsPlayed = new Cards();
         this.isExchangeCard = false;
-        this.typeOfCard = -1;
+      //  this.typeOfCard = -1;
     }
    
     
