@@ -119,22 +119,21 @@ public class Solve {
     
     public String isWinPoints() {
         Card cardMax = this.playedCard.get(0);
-        int index = 0, point = 0, Flag = 0;
+        int index = 0, point = 0;
         
         // tim thu tu nguoi choi danh la bai lon nhat
         for (int i = 0; i < this.playedCard.size(); ++i) {
-            if (Flag == 1) 
+            if (this.playedCard.get(i).getType() == this.playedCard.get(0).getType()) {
                 if (this.playedCard.get(i).getValue() == 12 && this.playedCard.get(i).getType() == 0)
                     point += 14;
             
-            if (this.playedCard.get(i).getType() > 1) {
-                point += 1;
-                Flag = 1;
-            }
-            
-            if (cardMax.isSmaller(this.playedCard.get(i))) {
-                cardMax = this.playedCard.get(i);
-                index = i;
+                if (this.playedCard.get(i).getType() == 3) 
+                    point += 1;
+
+                if (cardMax.isSmaller(this.playedCard.get(i))) {
+                    cardMax = this.playedCard.get(i);
+                    index = i;
+                }
             }
         }
         

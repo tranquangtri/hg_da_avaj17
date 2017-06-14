@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="game.server.core.SolveTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-06-13T17:25:37" hostname="DESKTOP-FUPSOE7" time="0.234">
+<testsuite name="game.server.core.SolveTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2017-06-14T05:27:02" hostname="DESKTOP-FUPSOE7" time="0.344">
   <properties/>
-  <testcase name="login" classname="game.server.core.SolveTest" time="0.234"/>
+  <testcase name="login" classname="game.server.core.SolveTest" time="0.344"/>
   <system-out><![CDATA[jdbc:mysql://localhost:3306/1412578_1412591_1412550_user
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>

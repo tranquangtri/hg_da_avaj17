@@ -800,8 +800,10 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                                 scoreUsers.get(result.get(2)).setText(data[0] + " " + score);
                             } 
 
-                            if (solve.getUser().getSttPlay() == result.get(1)) 
+                            if (solve.getUser().getSttPlay() == result.get(1)) {
+                                solve.setTypeOfCard(-1);
                                 cardsPlayingScreen.setEnablePlayingCards(0, solve.getTypeOfCard(), solve.getCards());
+                            }
                             else
                                 cardsPlayingScreen.setEnablePlayingCards(-1, solve.getTypeOfCard(), null);
 
