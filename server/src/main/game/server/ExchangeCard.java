@@ -27,8 +27,8 @@ class ExchangerClockWise implements Exchanger{
     @Override
     public void exchange(ExchangeCard exchangeCard) {
         String tmp = exchangeCard.get(exchangeCard.size() - 1);
-        for (int i = exchangeCard.size() - 1; i > 0; --i)
-            exchangeCard.set(i, exchangeCard.get(i - 1));
+        for (int i = exchangeCard.size() - 1; i > 0; --i) 
+            exchangeCard.set(i, exchangeCard.get(i - 1)); 
         exchangeCard.set(0, tmp);
     }
 }
@@ -74,6 +74,7 @@ class ExchangerNoExchange implements Exchanger{
 final class ExchangeCard{
     private final List<String> exchangeCard;
     private Exchanger exchanger;
+    
     public static Exchanger getExchangerFromTime(int exchangeCardTime){
         if (exchangeCardTime == 0) return new ExchangerClockWise();
         if (exchangeCardTime == 1) return new ExchangerCounterClockWise();
@@ -82,6 +83,8 @@ final class ExchangeCard{
     }
     public ExchangeCard(){
         exchangeCard = new ArrayList<>();
+        for (int i = 0; i < 4; ++i)
+            exchangeCard.add("");
     }
 
     /**
@@ -93,23 +96,27 @@ final class ExchangeCard{
     public int exchange(int exchangeCardTime) {
         Exchanger exchanger = getExchangerFromTime(exchangeCardTime);
         exchanger.exchange(this);
-        if (exchangeCardTime == 4) exchangeCardTime =0;
+        if (exchangeCardTime == 4) exchangeCardTime = 0;
         return exchangeCardTime;
     }
 
     /**
-     * Tìm vị trí quân 3 bích <b>trong bộ bài trao đổi</b>
+     * Tìm vị trí quân 2 chuồn <b>trong bộ bài trao đổi</b>
      * @return
      */
-    public int find3BlangesIfHaving() {
+    public int find2ClubIfHaving() {
         for (int i = 0; i < this.exchangeCard.size(); ++i) {
-            int index1 = this.exchangeCard.get(i).indexOf("3");
-            int index2 = this.exchangeCard.get(i).indexOf("0");
-            if ((index1 == -1 && index2 == -1) && (index2 == index1 + 1))
-                return i;
+            try {
+                String[] data = this.exchangeCard.get(i).split("-")[1].split(" ");
+                for (int j = 0; j < data.length; ++j)
+                    if ("2".equals(data[j]) && (j % 2 == 0) && "1".equals(data[j + 1]))
+                        return i;
+            }
+            catch (Exception ex) {break;}
         }
         return -1;
     }
+    
     public String get(int index){
         return exchangeCard.get(index);
     }
@@ -122,9 +129,9 @@ final class ExchangeCard{
     public boolean isEmpty(){
         return exchangeCard.isEmpty();
     }
-    public String receive3Card(String dataFromClient) {
+    public String receive3Card(int indexOfClient, String dataFromClient) {
         if (dataFromClient.contains("3Cards"))
-            exchangeCard.add("Exchange card-" + dataFromClient.split("-")[1]);
+            exchangeCard.set(indexOfClient, "Exchange card-" + dataFromClient.split("-")[1]);
         return "Waiting to exchange card";
     }
     public void set(int index, String item){

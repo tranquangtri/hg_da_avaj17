@@ -9,15 +9,7 @@ import java.util.Set;
 public class Cards {
     private ArrayList<Card> cards = new ArrayList<>();
     
-    public Cards() { // Ham tao bo bai 52 la ./.
-        for (int i = 1; i < 14; ++i) 
-            for (int j = 0; j < 4; ++j) {
-                if (i == 1) 
-                    cards.add(new Card(14, j));
-                else
-                    cards.add(new Card(i, j));
-            }
-    }
+    public Cards() {}
 
     public Cards(String data) { // Ham tao bai cho user (13 la hoac 3 la)
         if (data == null)
@@ -27,6 +19,8 @@ public class Cards {
         for (int i = 0; i < card.length; ++i)
             this.cards.add(new Card(Integer.parseInt(card[i]), Integer.parseInt(card[++i])));
     }
+    
+    
     
     public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
@@ -42,24 +36,29 @@ public class Cards {
         return this.cards;
     }
     
-    public void add(int value, int type) {
-        this.cards.add(new Card(value, type));
-    }
-    
     public void add(Card card) {
         this.cards.add(card);
+    }
+    
+    public void add(int value, int type) {
+        this.cards.add(new Card(value, type));
     }
     
     public void delete(int index) {
         this.cards.remove(index);
     }
     
+    public void deleteAll() {
+        this.cards.removeAll(this.cards);
+    }
+    
+    
     public ArrayList<Card> shuffleCards(ArrayList<Card> cards) { // ham xao bai ./.
         Set<Card> newCards = new HashSet<>();
         Random rand = new Random();
         
-        while (newCards.size() != 52) 
-            newCards.add(cards.get(rand.nextInt(52)));
+        while (newCards.size() != this.cards.size()) 
+            newCards.add(cards.get(rand.nextInt(this.cards.size())));
         
         this.cards.removeAll(cards);
         this.cards = new ArrayList<>(newCards);
@@ -81,11 +80,24 @@ public class Cards {
         return card_13;
     }
     
-    public int find3Blanges(ArrayList<ArrayList<Card>> card_13) {
-        for (int i = 0; i < card_13.size(); ++i)
-            for (int j = 0; j < card_13.get(i).size(); ++j)
-                if (card_13.get(i).get(j).getValue() == 3 && card_13.get(i).get(j).getType() == 0)
-                    return i;
+    public int find2ClubIn1Cards(Cards card) {
+        for (int i = 0; i < card.getCards().size(); ++i)
+            if (card.getCards().get(i).getValue() == 2 && card.getCards().get(i).getType() == 1)
+                return i;
         return -1;
+    }
+    
+    
+    public void sortCard(boolean isAddCard) {
+        if (isAddCard)
+            shuffleCards(this.cards);
+        
+        for (int i = 0; i < cards.size() - 1; ++i) 
+            for (int j = i + 1; j < cards.size(); ++j) 
+                if (cards.get(i).isSmaller(cards.get(j))) {
+                    Card tmp = new Card(cards.get(i));
+                    cards.set(i, cards.get(j));
+                    cards.set(j, tmp);
+                }
     }
 }
