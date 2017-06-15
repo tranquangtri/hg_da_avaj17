@@ -26,22 +26,21 @@ class ExchangerClockWise implements Exchanger{
 
     @Override
     public void exchange(ExchangeCard exchangeCard) {
-        String tmp = exchangeCard.get(exchangeCard.size() - 1);
-        for (int i = exchangeCard.size() - 1; i > 0; --i) 
-            exchangeCard.set(i, exchangeCard.get(i - 1)); 
-        exchangeCard.set(0, tmp);
+        System.out.println("DMMMMMMMMMMMMMMM2222222222 " + exchangeCard.size());
+        String tmp = exchangeCard.get(0);
+        for (int i = 0; i < exchangeCard.size() - 1; ++i)
+            exchangeCard.set(i, exchangeCard.get(i + 1));
+        exchangeCard.set(exchangeCard.size() - 1, tmp);
     }
 }
 class ExchangerCounterClockWise implements Exchanger{
 
     @Override
     public void exchange(ExchangeCard exchangeCard) {
-        String tmp = exchangeCard.get(0);
-
-        for (int i = exchangeCard.size() - 1; i > 0; --i)
-            exchangeCard.set(i - 1, exchangeCard.get(i));
-
-        exchangeCard.set(exchangeCard.size() - 1, tmp);
+        String tmp = exchangeCard.get(exchangeCard.size() - 1);
+        for (int i = exchangeCard.size() - 1; i > 0; --i) 
+            exchangeCard.set(i, exchangeCard.get(i - 1)); 
+        exchangeCard.set(0, tmp);
     }
 }
 class ExchangerFaceToFace implements Exchanger{
@@ -50,7 +49,7 @@ class ExchangerFaceToFace implements Exchanger{
     public void exchange(ExchangeCard exchangeCard) {
         for (int i = 0; i < 2; ++i) {
             String tmp = exchangeCard.get(i);
-            exchangeCard.set(i, exchangeCard.get(i + 1));
+            exchangeCard.set(i, exchangeCard.get(i + 2));
             exchangeCard.set(i + 2, tmp);
         }
     }
@@ -76,9 +75,9 @@ final class ExchangeCard{
     private Exchanger exchanger;
     
     public static Exchanger getExchangerFromTime(int exchangeCardTime){
-        if (exchangeCardTime == 0) return new ExchangerClockWise();
-        if (exchangeCardTime == 1) return new ExchangerCounterClockWise();
-        if (exchangeCardTime == 3) return new ExchangerFaceToFace(); //!!
+        if (exchangeCardTime == 0) return new ExchangerClockWise(); // trao doi nguoc chieu kim dong ho
+        if (exchangeCardTime == 1) return new ExchangerCounterClockWise(); // trao doi cung chieu kim dong ho
+        if (exchangeCardTime == 3) return new ExchangerFaceToFace(); // trao doi cho phia doi dien
         return new ExchangerNoExchange();
     }
     
@@ -95,6 +94,7 @@ final class ExchangeCard{
      * @return
      */
     public int exchange(int exchangeCardTime) {
+        System.out.println("DMMMMMMMMMMMMMMM " + exchangeCardTime);
         Exchanger exchanger = getExchangerFromTime(exchangeCardTime);
         exchanger.exchange(this);
         if (exchangeCardTime == 4) exchangeCardTime = 0;

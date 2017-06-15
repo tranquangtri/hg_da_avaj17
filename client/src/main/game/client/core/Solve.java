@@ -167,6 +167,7 @@ public class Solve {
         this.cards = new Cards();
         this.cardsPlayed = new Cards();
         this.isExchangeCard = false;
+        this.breakingHeart = false;
       //  this.typeOfCard = -1;
     }
    
