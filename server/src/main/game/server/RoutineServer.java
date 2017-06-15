@@ -79,8 +79,6 @@ public class RoutineServer implements IClientHandler{
         
         while (true) {
             if (DataReceivedAnalysis.state >= 1) {
-                if (!thread.isEmpty())
-                    thread.removeAll(thread);
                 
                 if (i == clientManager.getCount()) 
                     i = 0;

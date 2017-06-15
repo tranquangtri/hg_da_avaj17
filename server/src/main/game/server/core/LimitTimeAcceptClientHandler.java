@@ -62,6 +62,10 @@ class LimitTimeAcceptClientHandler implements IAcceptClientHandler {
         }
         catch (IOException e2) {
             if (e2 instanceof SocketException){
+                // Thêm các npc client vào các slot trống
+                while (clientManager.getCount() < 4){
+                    clientManager.add(new NPCClient());
+                }
                 return;
             }
             e2.printStackTrace();

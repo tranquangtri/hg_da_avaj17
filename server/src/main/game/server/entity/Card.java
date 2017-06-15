@@ -12,7 +12,10 @@ public class Card {
         this.value = value;
         this.type = type;
     }
-    
+    public Card(Card card) {
+        this.value = card.getValue();
+        this.type = card.getType();
+    }
     public void setValue(int value) {
         this.value = value;
     }
