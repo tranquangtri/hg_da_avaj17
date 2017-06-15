@@ -24,6 +24,7 @@ package game.server;
 import game.server.entity.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class ClientSolve {
@@ -147,13 +148,20 @@ public class ClientSolve {
        
         if (cardsPlayed.getCards().size() == 1) // Neu la la bai dau tien thi luu lai kieu cua la bai
             this.typeOfCard = Integer.parseInt(card[1]);
-        
-        if (this.user.getSttPlay() == Integer.parseInt(data[2])) 
+
+        System.err.println("Debug user input data:");
+        Arrays.stream(dataReceived.split(" ")).forEach((it)->System.err.print(it + ","));
+        if (this.user.getSttPlay() == Integer.parseInt(dataReceived.split("-")[2].substring(0,1)))
             result.add(0);
         else
             result.add(-1);
         
         if (data.length == 6) { // cac buoc cap nhat man hinh sau khi 4 player da danh bai se lam ben GUI
+            if (this.user.getSttPlay() == Integer.parseInt(dataReceived.split("-")[4].substring(0,1))){
+                result.remove(0);
+                result.add(0);
+            }
+            else result.add(-1);
             if (data[3].contains("winpoint")) { // tra ra ben ngoai index cua player an diem va diem
                 String[] dat = data[4].split(" ");
                 result.add(Integer.parseInt(dat[0]));

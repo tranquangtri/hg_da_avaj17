@@ -19,14 +19,24 @@ import java.util.concurrent.SynchronousQueue;
 class NPCClient implements IClient {
     BlockingDeque<String> msgSendQueue;
     BlockingDeque<String> msgReceiveQueue;
-    public NPCClient(){
+    private String id;
+    PrintWriter writer;
+    public NPCClient(String id){
         msgSendQueue = new LinkedBlockingDeque<>(100);
         msgReceiveQueue = new LinkedBlockingDeque<>(100);
-        new Thread(new ClientThread(msgSendQueue, msgReceiveQueue)).start();
+        this.id = id;
+        try {
+            writer = new PrintWriter(new File("fakeclient_"+id+".log"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        new Thread(new ClientThread(id, msgSendQueue, msgReceiveQueue)).start();
     }
     public void send(String message){
         try {
             msgSendQueue.put(message);
+            writer.println("Server send:" + message);
+            writer.flush();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -35,6 +45,8 @@ class NPCClient implements IClient {
         String ret = null;
         try {
             ret = msgReceiveQueue.take();
+            writer.println("Server receive:" + ret);
+            writer.flush();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -45,31 +57,46 @@ class NPCClient implements IClient {
 class ClientThread implements Runnable {
     BlockingQueue<String> msgSendQueue;
     BlockingQueue<String> msgReceiveQueue;
+    private String id;
     private String dataFromServer;
     private Server server;
     private ClientSolve solve;
     private int step;
+    PrintWriter writer;
 
-    public ClientThread(BlockingQueue<String> msgSendQueue,
+    public ClientThread(String id, BlockingQueue<String> msgSendQueue,
                         BlockingQueue<String> msgReceiveQueue) {
         this.msgSendQueue = msgSendQueue;
         this.msgReceiveQueue = msgReceiveQueue;
         solve = new ClientSolve();
         dataFromServer = "";
+        this.id=id;
+        try {
+            writer = new PrintWriter(new File(id+".log"));
+            writer.println("-------------------------");
+            writer.flush();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void send(String msg) {
         try {
             msgReceiveQueue.put(msg);
+            writer.println("Send:"+msg);
+            writer.flush();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("client-send:"+msg);
+        writer.println("Send:"+msg);
     }
 
     private String receive() {
         try {
-            return msgSendQueue.take();
+            String ret = msgSendQueue.take();
+            writer.println("Receive:"+ret);
+            writer.flush();
+            return ret;
         } catch (InterruptedException e) {
             e.printStackTrace();
             return null;
@@ -79,9 +106,6 @@ class ClientThread implements Runnable {
     private void receiveDataAndAnalysis() { // Nhan du lieu tu server va phan tich xem yeu cau cua server la gi
         dataFromServer = receive();
         step = new DataReceivedAnalysis().resultAfterAnalysis(dataFromServer);
-
-        System.out.println("client-data:" + dataFromServer);
-        System.out.println("step:" + step);
     }
 
     private void receivedSTTPlay() {
@@ -91,8 +115,8 @@ class ClientThread implements Runnable {
 
     @Override
     public void run() {
-        System.out.println(receive());
-        send("Username-" + Integer.toString(this.hashCode()));
+        receive();
+        send("Username-" + id);
         receive();
         send("Accept");
         receiveDataAndAnalysis();
@@ -105,6 +129,8 @@ class ClientThread implements Runnable {
             send(solve.exchnageCard());
             receivedSTTPlay();
             boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
+            writer.println("Starter Stt:"+solve.getUser().getSttPlay());
+            writer.flush();
             if (isPlay) {
                 //
                 Card card = myCards.autoPlay(solve.getCardsPlayed().getCards(), false);
@@ -117,7 +143,10 @@ class ClientThread implements Runnable {
         while (true) {
             receiveDataAndAnalysis();
             ArrayList<Integer> result = solve.play(dataFromServer);
-            System.out.println("Solve:"+dataFromServer + "  result:"+result.get(0));
+            writer.println("solve.play('"+dataFromServer+"');");
+            writer.println("Current Stt:"+solve.getUser().getSttPlay());
+            writer.println("result.get(0)=:"+result.get(0));
+            writer.flush();
             if (result.size() > 1) {
                 if (solve.getUser().getSttPlay() == result.get(1)) {
                     solve.setTypeOfCard(-1);
@@ -139,7 +168,6 @@ class ClientThread implements Runnable {
                 else
                     send("Card played-" + card.getValue() + " " + card.getType());
             }
-            while (true) ;
         }
     }
 }

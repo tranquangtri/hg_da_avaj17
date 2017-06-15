@@ -1,0 +1,151 @@
+-------------------------
+Receive:Welcome to Heart games ! Please, input username:
+Send:Username-NPC_1
+Send:Username-NPC_1
+Receive:NPC_1 0 0-should click 'ACCEPT' to start game
+Send:Accept
+Send:Accept
+Receive:Waiting to devide card
+Send:Devide card
+Send:Devide card
+Receive:Card3Cards-10 0 2 0 5 0 11 2 6 3 6 1 14 3 2 3 4 0 5 1 11 3 10 3 12 1-NPC_1 NPC_3 NPC_2 5454
+Send:SttPlay3Cards-14 3 12 1 11 3
+Send:SttPlay3Cards-14 3 12 1 11 3
+Receive:STTPlay-0-Exchange card-3 1 2 1 7 1-start
+Starter Stt:0
+Send:Card played-2 1
+Send:Card played-2 1
+Receive:Card played-2 1-1 0
+solve.play('Card played-2 1-1 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-8 0-2 0
+solve.play('Card played-8 0-2 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-13 0-3 0
+solve.play('Card played-13 0-3 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-8 1-3 0-None win points-3-3 0 0 1 1 2 2 3
+solve.play('Card played-8 1-3 0-None win points-3-3 0 0 1 1 2 2 3');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-12 0-1 0
+solve.play('Card played-12 0-1 0');
+Current Stt:1
+result.get(0)=:0
+Send:Card played-10 0
+Send:Card played-10 0
+Receive:Card played-10 0-2 0
+solve.play('Card played-10 0-2 0');
+Current Stt:1
+result.get(0)=:-1
+Receive:Card played-8 0-3 0
+solve.play('Card played-8 0-3 0');
+Current Stt:1
+result.get(0)=:-1
+Receive:Card played-6 0-3 0-winpoint-0 3 13-0 0 1 1 2 2 3 3
+solve.play('Card played-6 0-3 0-winpoint-0 3 13-0 0 1 1 2 2 3 3');
+Current Stt:1
+result.get(0)=:-1
+Receive:Card played-3 0-1 0
+solve.play('Card played-3 0-1 0');
+Current Stt:1
+result.get(0)=:0
+Send:Card played-10 0
+Send:Card played-10 0
+Receive:Card played-10 0-2 0
+solve.play('Card played-10 0-2 0');
+Current Stt:1
+result.get(0)=:-1
+Receive:Card played-8 0-3 0
+solve.play('Card played-8 0-3 0');
+Current Stt:1
+result.get(0)=:-1
+Receive:Card played-4 1-3 0-None win points-1-1 0 2 1 3 2 0 3
+solve.play('Card played-4 1-3 0-None win points-1-1 0 2 1 3 2 0 3');
+Current Stt:1
+result.get(0)=:0
+Send:Card played-2 3
+Send:Card played-2 3
+Receive:Card played-2 3-1 0
+solve.play('Card played-2 3-1 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-14 3-2 0
+solve.play('Card played-14 3-2 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-9 0-3 0
+solve.play('Card played-9 0-3 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-5 3-3 0-winpoint-1 2 3-1 0 2 1 3 2 0 3
+solve.play('Card played-5 3-3 0-winpoint-1 2 3-1 0 2 1 3 2 0 3');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-2 2-1 0
+solve.play('Card played-2 2-1 0');
+Current Stt:3
+result.get(0)=:-1
+Receive:Card played-4 1-2 0
+solve.play('Card played-4 1-2 0');
+Current Stt:3
+result.get(0)=:-1
+Receive:Card played-5 2-3 0
+solve.play('Card played-5 2-3 0');
+Current Stt:3
+result.get(0)=:0
+Send:Card played-11 2
+Send:Card played-11 2
+Receive:Card played-11 2-3 0-None win points-3-3 0 0 1 1 2 2 3
+solve.play('Card played-11 2-3 0-None win points-3-3 0 0 1 1 2 2 3');
+Current Stt:3
+result.get(0)=:0
+Send:Card played-2 3
+Send:Card played-2 3
+Receive:Card played-2 3-1 0
+solve.play('Card played-2 3-1 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-14 3-2 0
+solve.play('Card played-14 3-2 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-13 3-3 0
+solve.play('Card played-13 3-3 0');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-12 3-3 0-winpoint-1 2 4-1 0 2 1 3 2 0 3
+solve.play('Card played-12 3-3 0-winpoint-1 2 4-1 0 2 1 3 2 0 3');
+Current Stt:0
+result.get(0)=:-1
+Receive:Card played-2 2-1 0
+solve.play('Card played-2 2-1 0');
+Current Stt:3
+result.get(0)=:-1
+Receive:Card played-14 2-2 0
+solve.play('Card played-14 2-2 0');
+Current Stt:3
+result.get(0)=:-1
+Receive:Card played-13 2-3 0
+solve.play('Card played-13 2-3 0');
+Current Stt:3
+result.get(0)=:0
+Send:Card played-10 3
+Send:Card played-10 3
+Receive:Card played-10 3-3 1-winpoint-1 1 1-1 0 2 1 3 2 0 3
+solve.play('Card played-10 3-3 1-winpoint-1 1 1-1 0 2 1 3 2 0 3');
+Current Stt:3
+result.get(0)=:0
+Send:Card played-2 3
+Send:Card played-2 3
+Receive:Card played-13 3-1 1
+solve.play('Card played-13 3-1 1');
+Current Stt:2
+result.get(0)=:-1
+Receive:Card played-7 0-2 1
+solve.play('Card played-7 0-2 1');
+Current Stt:2
+result.get(0)=:0

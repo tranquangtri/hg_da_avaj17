@@ -18,19 +18,23 @@ class MyThread {
                 while (true) {
                     String dataReceived = clientManager.receive(index);
                     int state = dataAnalysis.resultAfterAnalysis(dataReceived);
-                    Result result = solve.solvingForServer(state, index, dataReceived);
-                    
+                    Result result;
+                    synchronized (solve) {
+                        result = solve.solvingForServer(state, index, dataReceived);
+                    }
                     System.out.println("Client " + index + "--------" + dataReceived);
                     System.out.println("State login: " + state);
                     
                     clientManager.send(result.getIndex(), result.getMessage());
 
                     if (!result.getMessage().contains("Duplicate username")) {
-                        if (Solve.countFeedback == clientManager.getCount()) {
-                            Solve.countFeedback = 0;
-                            DataReceivedAnalysis.state += 1;
+                        synchronized (solve) {
+                            if (Solve.countFeedback == clientManager.getCount()) {
+                                Solve.countFeedback = 0;
+                                DataReceivedAnalysis.state += 1;
+                            }
+                            return;
                         }
-                        return;
                     }
                 }
             }
@@ -84,21 +88,22 @@ public class RoutineServer implements IClientHandler{
                     i = 0;
 
                 for (; i < clientManager.getCount(); i++){
-                    System.out.println("________________Listening socket: " + i);
+                    System.out.println("________________Listening client: " + i);
                     if (DataReceivedAnalysis.state != 4) { // state bằng 4 đang là bước nhận xong bài client muốn trao đổi, tại bước này server không nhận được message do client gửi 
                                                             // vì tại state = 3 server không gửi message cho client (server phải nhận đủ bài từ client mới thực hiện trao đổi được)
                         String dataReceived = clientManager.receive(i);
                         int state = dataAnalysis.resultAfterAnalysis(dataReceived);
                         Result result = solve.solvingForServer(state, i, dataReceived);
                         
-                        System.out.println("Client " + i + "--------" + dataReceived);
+                        System.out.println("Client " + i + " sended:" + dataReceived);
                         System.out.println("State: " + state);
-                        System.out.println("Send message: " + result.getMessage());
+                        System.out.println("Send to client: " + result.getMessage());
 
                         if (DataReceivedAnalysis.state < 3) // Đang là bước nhận  3 lá bài từ client => nhận đủ mới send
                             clientManager.send(i, result.getMessage());
                         if (DataReceivedAnalysis.state > 4) {
                             clientManager.sendAll(result.getMessage());
+                            System.out.println("Send all: " + result.getMessage());
                             if (result.getMessage().contains(" end"))
                                 solve.reset();
                         }
