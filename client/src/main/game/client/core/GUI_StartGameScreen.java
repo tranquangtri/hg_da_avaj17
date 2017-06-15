@@ -17,6 +17,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     private static Solve solve;
     private static int step;
     private static int isAccept;
+    private static int isClick;
     
     
     
@@ -37,6 +38,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         // Set thong tin ban dau cho giao dien ./.
         
         GUI_StartGameScreen.isAccept = 0;
+        GUI_StartGameScreen.isClick = 0;
         
         GUI_StartGameScreen.txt_Username.setVisible(false);
         GUI_StartGameScreen.label_Username_Login.setVisible(false);
@@ -330,6 +332,9 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_UsernameKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_UsernameKeyTyped(evt);
+            }
         });
         loginForm.getContentPane().add(txt_Username);
         txt_Username.setBounds(80, 160, 250, 30);
@@ -340,11 +345,11 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         loginForm.getContentPane().add(label_Username_Login);
         label_Username_Login.setBounds(80, 130, 110, 20);
 
-        label_Message.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        label_Message.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         label_Message.setForeground(new java.awt.Color(255, 255, 0));
         label_Message.setText("Connecting server.....");
         loginForm.getContentPane().add(label_Message);
-        label_Message.setBounds(140, 200, 200, 15);
+        label_Message.setBounds(140, 200, 200, 14);
 
         button_Login.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/login_button.png"))); // NOI18N
         button_Login.setBorderPainted(false);
@@ -660,6 +665,10 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
             @Override
             public void run() {
                 if (GUI_StartGameScreen.isAccept == 0) {
+                    
+                    if (isClick == 1)return;
+                    
+                    GUI_StartGameScreen.isClick = 1; // bien de ngan khong cho nguoi dung click nhieu lan vao button
                     GUI_StartGameScreen.server.send("Accept"); // gui Accept chap nhan choi game
                     receiveDataAndAnalysis();
                     
@@ -677,13 +686,21 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                         label_Introdution.setText("Waiting to start game");
                         server.send("SttPlay");
                         receivedSTTPlay();
+                        GUI_StartGameScreen.isAccept += 1;
                     }
+                    GUI_StartGameScreen.isClick = 0;
                 }
                 else if (GUI_StartGameScreen.isAccept == 1) {
+                    
+                    if (GUI_StartGameScreen.isClick == 1) 
+                        return;
+                    
                     if (solve.getCardExchange().getCards().size() != 3) {
                         label_Introdution.setText("Choose 3 cards");
                         return;
                     }
+                    
+                    GUI_StartGameScreen.isClick = 1;
 
                     // set icon cho bai da gui di = trong
                     cardsPlayedScreen.setCardsInScreenNull();
@@ -697,6 +714,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                     // cap nhat du lieu cho man hinh
                     for (int i = 0; i < 13; ++i) 
                         cardsPlayingScreen.setCardsInScreen(i, solve.getCard(i));
+                    GUI_StartGameScreen.isClick = 0;
                 }
 
                 GUI_StartGameScreen.isAccept += 1;
@@ -750,9 +768,18 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosed
 
     private void txt_UsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_UsernameKeyPressed
+       
         if (evt.getKeyCode() == 10)
             login();
     }//GEN-LAST:event_txt_UsernameKeyPressed
+
+    private void txt_UsernameKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_UsernameKeyTyped
+        char c = evt.getKeyChar();
+        if ((c < '0' || c > '9') && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')) && (c != evt.VK_BACK_SPACE)) {
+            evt.consume(); // consume non-numbers
+        }
+
+    }//GEN-LAST:event_txt_UsernameKeyTyped
 
     
   
@@ -820,7 +847,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
                             cardsPlayedScreen.setCardsInScreenNull();
                             
                             if (dataFromServer.contains(" end")) {
-                                isAccept = 0;
+                                isAccept = isClick = 0;
                                 step = 1; DataReceivedAnalysis.state = 1;
                                 solve.reset();
                                 cardsPlayingScreen.setEnableForAllCards(true);

@@ -76,7 +76,7 @@ final class ExchangeCard{
     private Exchanger exchanger;
     
     public static Exchanger getExchangerFromTime(int exchangeCardTime){
-        if (exchangeCardTime == 0) return new ExchangerClockWise();
+        if (exchangeCardTime == 2) return new ExchangerClockWise();
         if (exchangeCardTime == 1) return new ExchangerCounterClockWise();
         if (exchangeCardTime == 3) return new ExchangerFaceToFace(); //!!
         return new ExchangerNoExchange();
