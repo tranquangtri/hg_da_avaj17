@@ -193,7 +193,7 @@ public class Solve {
         this.cards = new Cards(dataReceived.split("-")[1]);
         this.cards.sortCard(false);
         if (dataReceived.contains("Card3")) {
-            this.isExchangeCard = false;
+            this.isExchangeCard = true;
             this.cardsExchange = new Cards(null);
         }
         return !this.cards.getCards().isEmpty();

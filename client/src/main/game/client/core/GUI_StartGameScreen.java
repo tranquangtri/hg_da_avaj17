@@ -778,7 +778,6 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         if ((c < '0' || c > '9') && ((c < 'A' || c > 'Z') && (c < 'a' || c > 'z')) && (c != evt.VK_BACK_SPACE)) {
             evt.consume(); // consume non-numbers
         }
-
     }//GEN-LAST:event_txt_UsernameKeyTyped
 
     
