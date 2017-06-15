@@ -81,6 +81,7 @@ final class ExchangeCard{
         if (exchangeCardTime == 3) return new ExchangerFaceToFace(); //!!
         return new ExchangerNoExchange();
     }
+    
     public ExchangeCard(){
         exchangeCard = new ArrayList<>();
         for (int i = 0; i < 4; ++i)
