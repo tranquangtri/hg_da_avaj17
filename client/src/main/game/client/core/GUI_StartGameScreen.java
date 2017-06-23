@@ -658,7 +658,9 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
         button_Start = new javax.swing.JButton();
         label_Background_Startgame = new javax.swing.JLabel();
 
+        choosePlayingTypeForm.setTitle("Choosing playing type");
         choosePlayingTypeForm.setMinimumSize(new java.awt.Dimension(400, 400));
+        choosePlayingTypeForm.setResizable(false);
         choosePlayingTypeForm.getContentPane().setLayout(null);
 
         button_Online.setIcon(new javax.swing.ImageIcon("C:\\Users\\TRANQUANGTRUNG\\Desktop\\java\\client\\src\\resources\\Images\\online_button.png")); // NOI18N
@@ -705,6 +707,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
         loginForm.setTitle("Login");
         loginForm.setMinimumSize(new java.awt.Dimension(400, 400));
+        loginForm.setResizable(false);
         loginForm.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 loginFormWindowClosing(evt);
@@ -760,6 +763,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
         infoForm.setTitle("Infor of user");
         infoForm.setMinimumSize(new java.awt.Dimension(400, 400));
+        infoForm.setResizable(false);
         infoForm.getContentPane().setLayout(null);
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 0));
@@ -810,6 +814,7 @@ public class GUI_StartGameScreen extends javax.swing.JFrame {
 
         playForm.setTitle("Play");
         playForm.setMinimumSize(new java.awt.Dimension(700, 700));
+        playForm.setResizable(false);
         playForm.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 playFormWindowClosing(evt);

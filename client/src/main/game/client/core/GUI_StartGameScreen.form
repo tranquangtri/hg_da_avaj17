@@ -4,9 +4,11 @@
   <NonVisualComponents>
     <Container class="javax.swing.JFrame" name="choosePlayingTypeForm">
       <Properties>
+        <Property name="title" type="java.lang.String" value="Choosing playing type"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[400, 400]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
@@ -74,6 +76,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[400, 400]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="loginFormWindowClosing"/>
@@ -180,6 +183,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[400, 400]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
@@ -289,6 +293,7 @@
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[700, 700]"/>
         </Property>
+        <Property name="resizable" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="playFormWindowClosing"/>
