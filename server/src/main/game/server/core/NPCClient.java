@@ -84,7 +84,7 @@ class ClientThread implements Runnable {
         boolean isPlay = solve.receiveSTTPlayAndExchangeCardIfHaving(dataFromServer);
         
         if (isPlay) {
-            Card card = myCards.autoPlay(false, solve.getCardsPlayed());
+            Card card = myCards.autoPlay(solve.getCardsPlayed().getCards(), false);
             System.out.println(solve.getUser().getUserName() +  " VVVVVVVVVVVVVV " + card.getValue() + "-" + 
                                card.getType() + "SIZE " + solve.getCards().getCards().size());
             send("Card played-" + card.getValue() + " " + card.getType());
@@ -144,7 +144,7 @@ class ClientThread implements Runnable {
                     if (solve.getUser().getSttPlay() == result.get(0) && 
                         solve.getCardsPlayed().getCards().size() == result.get(0)) {
 
-                        Card card = myCards.autoPlay(solve.getBreakingHeart(), solve.getCardsPlayed());
+                        Card card = myCards.autoPlay(solve.getCardsPlayed().getCards(), solve.getBreakingHeart());
                         System.out.println(solve.getUser().getUserName() +  " VVVVVVVVVVVVVV " + card.getValue() + "-" + 
                                            card.getType() + "SIZE " + solve.getCards().getCards().size());
 
