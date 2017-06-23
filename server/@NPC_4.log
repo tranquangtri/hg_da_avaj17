@@ -1,0 +1,44 @@
+-------------------------
+Receive:Welcome to Heart games ! Please, input username:
+Send:Username-@NPC_4
+Send:Username-@NPC_4
+Receive:@NPC_4 2 1-should click 'ACCEPT' to start game
+Send:Accept
+Send:Accept
+Receive:Waiting to devide card
+Send:Devide card
+Send:Devide card
+Receive:Card3Cards-11 1 4 0 2 1 3 3 7 1 9 2 12 2 14 3 4 3 2 3 7 3 12 0 9 1-@NPC_1 @NPC_4 @NPC_2 @NPC_3
+Send:SttPlay3Cards-14 3 7 3 4 3
+Send:SttPlay3Cards-14 3 7 3 4 3
+Receive:STTPlay-0-Exchange card-14 2 11 2 8 2-start
+Send:Card played-2 1
+Send:Card played-2 1
+Receive:Card played-2 1-1 0
+Receive:Card played-8 1-2 0
+Receive:Card played-14 1-3 0
+Receive:Card played-4 1-3 0-None win points-2-2 0 3 1 0 2 1 3
+Receive:Card played-6 2-1 0
+Receive:Card played-10 2-2 0
+Send:Card played-14 2
+Send:Card played-14 2
+Receive:Card played-14 2-3 0
+Receive:Card played-13 2-3 0-None win points-2-2 0 3 1 0 2 1 3
+Send:Card played-12 2
+Send:Card played-12 2
+Receive:Card played-12 2-1 0
+Receive:Card played-11 2-2 0
+Receive:Card played-13 3-3 1
+Receive:Card played-7 2-3 1-winpoint-0 1 1-0 0 1 1 2 2 3 3
+Send:Card played-7 3
+Send:Card played-7 3
+Receive:Card played-7 3-1 1
+Receive:Card played-11 3-2 1
+Receive:Card played-12 3-3 1
+Receive:Card played-14 3-3 1-winpoint-3 3 4-3 0 0 1 1 2 2 3
+Receive:Card played-12 3-1 1
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-3 3-2 1
+Receive:Card played-6 3-3 1
+Receive:Card played-10 3-3 1-winpoint-0 3 4-0 0 1 1 2 2 3 3

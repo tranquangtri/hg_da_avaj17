@@ -33,14 +33,14 @@ public class ClientSolve {
     private Cards cardsExchange = null;
     private Cards cardsPlayed = null;
     private boolean isExchangeCard; // kiem tra xem server co yeu cau client gui bai de trao doi khong
-    private int typeOfCard; // luu kieu cua la bai dau tien duoc danh ./.
+    private boolean breakingHeart;
 
     public ClientSolve() {
         this.user = new User();
-        this.cards = new Cards();
-        this.cardsPlayed = new Cards();
+        this.cards = new Cards("");
+        this.cardsPlayed = new Cards("");
         this.isExchangeCard = false;
-        this.typeOfCard = -1;
+        this.breakingHeart = false;
     }
     
     
@@ -75,6 +75,10 @@ public class ClientSolve {
          this.user.setMatches(Integer.parseInt(str[2]));
     }
     
+    public boolean getBreakingHeart() {
+        return this.breakingHeart;
+    }
+    
     
     public void setUser(User usr) {
         this.user = usr;
@@ -90,15 +94,6 @@ public class ClientSolve {
     
     public void setCardExchange(Cards cardsExchange) {
         this.cardsExchange = cardsExchange;
-    }
-    
-    public void setTypeOfCard(int type) {
-        this.typeOfCard = type;
-    }
-     
-     
-    public int getTypeOfCard() {
-        return this.typeOfCard;
     }
     
     
@@ -140,45 +135,42 @@ public class ClientSolve {
     public ArrayList<Integer> play(String dataReceived) {
         String[] data = dataReceived.split("-");
         String[] card = data[1].split(" ");
-        
         ArrayList<Integer> result = new ArrayList<>();
         
         if (this.cardsPlayed.getCards().size() != 4) // Chi them bai khi con it nhat 1 nguoi chua danh
             this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
-       
-        if (cardsPlayed.getCards().size() == 1) // Neu la la bai dau tien thi luu lai kieu cua la bai
-            this.typeOfCard = Integer.parseInt(card[1]);
 
         System.err.println("Debug user input data:");
         Arrays.stream(dataReceived.split(" ")).forEach((it)->System.err.print(it + ","));
-        if (this.user.getSttPlay() == Integer.parseInt(dataReceived.split("-")[2].substring(0,1)))
-            result.add(0);
+        String[] sttPlayAndBreakingHeart = data[2].split(" "); // Lay luot choi va bien xac dinh tim vo chua
+        this.breakingHeart = Integer.parseInt(sttPlayAndBreakingHeart[1]) == 1; // set tim vo da vo hay chua
+       
+        if (this.user.getSttPlay() == Integer.parseInt(sttPlayAndBreakingHeart[0])) 
+            result.add(this.user.getSttPlay());
         else
-            result.add(-1);
+            result.add(-1); // khong duoc quyen danh
         
         if (data.length == 6) { // cac buoc cap nhat man hinh sau khi 4 player da danh bai se lam ben GUI
-            if (this.user.getSttPlay() == Integer.parseInt(dataReceived.split("-")[4].substring(0,1))){
-                result.remove(0);
-                result.add(0);
-            }
-            else result.add(-1);
-            if (data[3].contains("winpoint")) { // tra ra ben ngoai index cua player an diem va diem
-                String[] dat = data[4].split(" ");
-                result.add(Integer.parseInt(dat[0]));
-                result.add(Integer.parseInt(dat[1]));
-                result.add(Integer.parseInt(dat[2]));
+            String[] dat = data[4].split(" "); // tra ra ben ngoai index cua player an diem va diem
+            if (data[3].contains("winpoint")) {
+                result.set(0, 4); // xac dinh co an diem
+                result.add(Integer.parseInt(dat[1])); // vi tri cua user an diem
+                result.add(Integer.parseInt(dat[2])); // diem ma user co duoc
+                
+                if (data[5].contains("wingame"))
+                    result.add(Integer.parseInt(data[5].split("wingame")[1].split(" ")[1]));
             }
             else 
-                result.add(Integer.parseInt(data[4]));
+                result.set(0, 4);
         }
         return result;
     }
     
     public void reset() {
-        this.cards = new Cards();
-        this.cardsPlayed = new Cards();
+        this.cards = new Cards("");
+        this.cardsPlayed = new Cards("");
         this.isExchangeCard = false;
-        this.typeOfCard = -1;
+        this.breakingHeart = false; 
     }
    
     

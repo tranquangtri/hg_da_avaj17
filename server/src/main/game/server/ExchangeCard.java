@@ -1,19 +1,3 @@
-/*
- * Copyright [2017] [TTT group]
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package game.server;
 
 import java.util.ArrayList;
@@ -26,7 +10,6 @@ class ExchangerClockWise implements Exchanger{
 
     @Override
     public void exchange(ExchangeCard exchangeCard) {
-        System.out.println("DMMMMMMMMMMMMMMM2222222222 " + exchangeCard.size());
         String tmp = exchangeCard.get(0);
         for (int i = 0; i < exchangeCard.size() - 1; ++i)
             exchangeCard.set(i, exchangeCard.get(i + 1));
@@ -94,7 +77,6 @@ final class ExchangeCard{
      * @return
      */
     public int exchange(int exchangeCardTime) {
-        System.out.println("DMMMMMMMMMMMMMMM " + exchangeCardTime);
         Exchanger exchanger = getExchangerFromTime(exchangeCardTime);
         exchanger.exchange(this);
         if (exchangeCardTime == 4) exchangeCardTime = 0;

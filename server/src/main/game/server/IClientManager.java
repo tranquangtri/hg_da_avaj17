@@ -18,4 +18,6 @@ public interface IClientManager{
     public int getCount();
     public String receive(int index);
     public void add(IClient client);
+    public void remove(int index);
+    public void set(int index, IClient client);
 }

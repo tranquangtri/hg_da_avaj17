@@ -1,6 +1,7 @@
 package game.server;
 
 import game.server.core.DataReceivedAnalysis;
+import game.server.core.NPCClient;
 import game.server.entity.Result;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -9,7 +10,7 @@ import java.util.logging.Logger;
 class MyThread {
     private final Thread thr;
     private int index;
-    
+   
     public MyThread(int index, IClientManager clientManager, DataReceivedAnalysis dataAnalysis, Solve solve) {
         this.index = index;
         thr = new Thread(){
@@ -18,15 +19,28 @@ class MyThread {
                 while (true) {
                     String dataReceived = clientManager.receive(index);
                     int state = dataAnalysis.resultAfterAnalysis(dataReceived);
+                    
+                    // tat form login
+                    if (state < 0) {
+                        System.out.println(dataReceived);
+                        clientManager.set(index, new NPCClient("@NPC_" + Integer.toString(index))); // tao mot luong mao danh user 
+                        clientManager.send(index, "Welcome to Heart games ! Please, input username:");
+                        continue;
+                    }
+                    
                     Result result;
+                    
                     synchronized (solve) {
                         result = solve.solvingForServer(state, index, dataReceived);
                     }
+                    
                     System.out.println("Client " + index + "--------" + dataReceived);
                     System.out.println("State login: " + state);
+                    System.out.println("Send client: " + index + " " + result.getMessage());
+                    
                     
                     clientManager.send(result.getIndex(), result.getMessage());
-
+                    
                     if (!result.getMessage().contains("Duplicate username")) {
                         synchronized (solve) {
                             if (Solve.countFeedback == clientManager.getCount()) {
@@ -47,7 +61,6 @@ class MyThread {
 }
 
 
-
 public class RoutineServer implements IClientHandler{
     private IClientManager clientManager;
     public void setClientManager(IClientManager clientManager){
@@ -59,6 +72,7 @@ public class RoutineServer implements IClientHandler{
        
         Solve solve = new Solve();
         DataReceivedAnalysis dataAnalysis = new DataReceivedAnalysis();
+     
         
         // Vi giao dien load len qua cham trong khi server da gui tin nen phia client khong the xu li duoc message dan
         // den loop forever
@@ -79,23 +93,30 @@ public class RoutineServer implements IClientHandler{
             thread.get(i).Start();
         }
         
+        System.out.println("CLIENT MANAGER: ___________________" + clientManager.getCount());
         int i = 0;
         
         while (true) {
             if (DataReceivedAnalysis.state >= 1) {
-                
-                if (i == clientManager.getCount()) 
-                    i = 0;
+                if (!thread.isEmpty()) thread.removeAll(thread); // can than de tranh xay ra tranh chap bien
+                if (i == clientManager.getCount()) i = 0;
 
                 for (; i < clientManager.getCount(); i++){
-                    System.out.println("________________Listening client: " + i);
                     if (DataReceivedAnalysis.state != 4) { // state bằng 4 đang là bước nhận xong bài client muốn trao đổi, tại bước này server không nhận được message do client gửi 
                                                             // vì tại state = 3 server không gửi message cho client (server phải nhận đủ bài từ client mới thực hiện trao đổi được)
                         String dataReceived = clientManager.receive(i);
+
                         int state = dataAnalysis.resultAfterAnalysis(dataReceived);
-                        Result result = solve.solvingForServer(state, i, dataReceived);
                         
+                       // if (countDisconect == 4) return;
+                        if (state < 0) {
+                            clientManager.sendAll("Disconnect");
+                            return;
+                        }
+                        Result result = solve.solvingForServer(state, i, dataReceived);
+
                         System.out.println("Client " + i + " sended:" + dataReceived);
+                        System.out.println("________________Listening client: " + i);
                         System.out.println("State: " + state);
                         System.out.println("Send to client: " + result.getMessage());
 
@@ -103,27 +124,22 @@ public class RoutineServer implements IClientHandler{
                             clientManager.send(i, result.getMessage());
                         if (DataReceivedAnalysis.state > 4) {
                             clientManager.sendAll(result.getMessage());
-                            System.out.println("Send all: " + result.getMessage());
-                            if (result.getMessage().contains(" end"))
-                                solve.reset();
+                            System.out.println("Client send: " + dataReceived);
+                            if (result.getMessage().contains(" end")) solve.reset();
                         }
-                        //clientManager.sendAll("should click 'ACCEPT' to start game");
-
                     }
                     else { // State = 4 (nhận đủ bài) => gửi tin cho client
                         Result result = solve.solvingForServer(4, i, "");
                         System.out.println(result.getMessage());
                         clientManager.send(i, result.getMessage());
-                        
-                    }
 
+                    }
                     if (Solve.countFeedback == clientManager.getCount()) { // Biến đếm để kiểm tra server nhận đủ 4 gói tin (kết thúc 1 công đoạn) từ
-                                                                            // client => nhảy qua công đaon5 khác khi đã nhận đủ 4 tin cho 1 giai đoạn
-                        Solve.countFeedback = 0;
-                        
+                        Solve.countFeedback = 0;                            // client => nhảy qua công đaon5 khác khi đã nhận đủ 4 tin cho 1 giai đoạn
+
                         if (DataReceivedAnalysis.state < 5) 
                             DataReceivedAnalysis.state += 1;
-                        
+
                         i = solve.getUserManager().getStrIndex() - 1;
                         System.out.println("Start index: " + (i + 1));
                     }

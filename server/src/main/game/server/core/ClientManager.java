@@ -19,22 +19,45 @@ final class ClientManager implements IClientManager{
     public ClientManager(){
         clients = new ArrayList<>();
     }
+    @Override
     public void add(IClient client){
         synchronized (clients) {
             clients.add(client);
         }
     }
-    public void sendAll(String message){
-        for (IClient client : clients){
-            client.send(message);
+    
+    @Override
+    public void remove(int index) {
+        synchronized (clients) {
+            clients.remove(index);
         }
     }
+    
+    @Override
+    public void set(int index, IClient client) {
+        synchronized (clients) {
+            clients.set(index, client);
+        }
+    }
+   
+    @Override
+    public void sendAll(String message){
+        clients.forEach((client) -> {
+            client.send(message);
+        });
+    }
+    
+    @Override
     public void send(int client, String message){
         clients.get(client).send(message);
     }
+    
+    @Override
     public int getCount(){
         return clients.size();
     }
+    
+    @Override
     public String receive(int index){
         return clients.get(index).receive();
     }

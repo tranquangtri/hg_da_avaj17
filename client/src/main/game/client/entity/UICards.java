@@ -53,7 +53,7 @@ public class UICards {
         this.uiCards.get(index).setIcon(new ImageIcon(getClass().getResource(imagePath(card.getValue(), card.getType()))));
     }
     
-    public void setCardsInScreen(Cards cards) {
+    public void setCardsOnScreen(Cards cards) {
         for (int i = 0; i < cards.getCards().size(); ++i) {
             Icon icon = new ImageIcon(getClass().getResource(imagePath(cards.getCards().get(i).getValue(), cards.getCards().get(i).getType())));
             if (this.uiCards.get(i).getIcon() != icon)
@@ -68,9 +68,13 @@ public class UICards {
     
     public void setEnablePlayingCards(Card firstCard, Cards cards) {
         int index = cards.find2ClubIn1Cards(cards);
+      
         if (index != -1) { // th tim thay 2 chuong trong bo bai
-            for (int i = 0; i < cards.getCards().size(); ++i) 
-                if (i != index) this.uiCards.get(i).setEnabled(false);
+            for (int i = 0; i < cards.getCards().size(); ++i) {
+                if (i != index)  this.uiCards.get(i).setEnabled(false);
+                else
+                    this.uiCards.get(i).setEnabled(true);
+            }
         }
         else { // th khong tim thay 2 chuong trong bo bai
             // tim trong bo bai hien tai cua player co co bai nao trung voi bai cua player 1 danh khong, co thi enable no,

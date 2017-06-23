@@ -10,7 +10,7 @@
         <constructor-arg name="port" value="1996"/>
         <property name="acceptClientHandler">
             <bean class="game.server.core.LimitTimeAcceptClientHandler">
-                <property name="timeout" value="10"/>
+                <property name="timeout" value="30"/>
             </bean>
         </property>
         <property name="clientHandler">

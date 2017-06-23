@@ -39,7 +39,7 @@ public class DataReceivedAnalysis {
     } // nhan yeu cau trao doi 3 la bai hoac choi game
     
     private int receivedPlayedCardFromClient(String dataReceived) {
-        if (dataReceived.contains("Card played"))
+        if (dataReceived != null && dataReceived.contains("Card played") == true)
             return 5;
         return -10;
     }

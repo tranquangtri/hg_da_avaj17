@@ -24,8 +24,8 @@ public class Solve {
         this.user = new User();
         this.cards = new Cards();
         this.cardsPlayed = new Cards();
+        this.cardsExchange = new Cards();
         this.isExchangeCard = false;
-        //this.typeOfCard = -1;
         this.breakingHeart = false;
     }
     
@@ -61,7 +61,6 @@ public class Solve {
          this.user.setMatches(Integer.parseInt(str[1]));
     }
 
-    
     public boolean getBreakingHeart() {
         return this.breakingHeart;
     }
@@ -129,10 +128,14 @@ public class Solve {
     }
     
     public ArrayList<Integer> play(String dataReceived) {
+        if (dataReceived == null || dataReceived.contains("-") == false) return null;
+        
         String[] data = dataReceived.split("-");
         String[] card = data[1].split(" ");
         
         ArrayList<Integer> result = new ArrayList<>();
+        
+        System.out.println("________________________________________________________" + this.cardsPlayed.getCards().size());
         
         if (this.cardsPlayed.getCards().size() != 4) // Chi them bai khi con it nhat 1 nguoi chua danh
             this.cardsPlayed.add(Integer.parseInt(card[0]), Integer.parseInt(card[1]));
@@ -160,6 +163,7 @@ public class Solve {
             else 
                 result.add(Integer.parseInt(dat[0]));
         }
+        System.out.println("Size of cards played:    " + this.cardsPlayed.getCards().size());
         return result;
     }
     
@@ -168,9 +172,14 @@ public class Solve {
         this.cardsPlayed = new Cards();
         this.isExchangeCard = false;
         this.breakingHeart = false;
-      //  this.typeOfCard = -1;
+    }
+    
+    public void resetOffline() {
+        this.cards = new Cards();
+        this.cardsPlayed = new Cards();
     }
    
+    
     
     public boolean receiveSTTPlayAndExchangeCardIfHaving(String dataReceived) {
         String[] data = dataReceived.split("-");
@@ -193,15 +202,21 @@ public class Solve {
     public boolean receivedCardFromServer(String dataReceived) {
         this.cards = new Cards(dataReceived.split("-")[1]);
         this.cards.sortCard(false);
-        if (dataReceived.contains("Card3")) {
+        if (dataReceived.contains("Card3")) 
             this.isExchangeCard = true;
-            this.cardsExchange = new Cards(null);
-        }
         return !this.cards.getCards().isEmpty();
     }
     
     public String[] receivedUsersFromServer(String dataReceived) {
         return dataReceived.split("-")[2].split(" ");
+    }
+    
+    public void receiveExchangeCardIfHavingOffline(ArrayList<Card> exchangeCard) {
+        for (int i = 0; i < exchangeCard.size(); ++i) 
+            this.cards.add(exchangeCard.get(i));
+
+        this.cards.sortCard(true);
+        this.cardsExchange.deleteAll();
     }
    
 }

@@ -12,10 +12,12 @@ public class Card {
         this.value = value;
         this.type = type;
     }
+    
     public Card(Card card) {
         this.value = card.getValue();
         this.type = card.getType();
     }
+    
     public void setValue(int value) {
         this.value = value;
     }
@@ -32,6 +34,13 @@ public class Card {
         return this.value;
     }
     
+    //kiểm tra 2 thẻ giống nhau để khi phát sinh loại trừ trường hợp 2 thẻ bài trùng nhau
+    boolean equalCard(Card c){
+        if(this.type == c.type && this.value == c.value)
+            return true;
+        return false;
+    }
+    
     public boolean isSmaller(Card card) {
         if (this.type < card.getType())
             return true;
@@ -40,4 +49,14 @@ public class Card {
                 return true;
         return false;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        Card tmp = (Card)obj;
+        if (this.value == tmp.getValue() && this.type == tmp.getType())
+            return true;
+        return false;
+    }
+    
+    
 }

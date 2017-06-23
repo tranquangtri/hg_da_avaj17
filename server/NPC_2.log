@@ -1,0 +1,115 @@
+-------------------------
+Receive:Welcome to Heart games ! Please, input username:
+Send:Username-NPC_2
+Send:Username-NPC_2
+Receive:NPC_2 2 1-should click 'ACCEPT' to start game
+Send:Accept
+Send:Accept
+Receive:Waiting to devide card
+Send:Devide card
+Send:Devide card
+Receive:Card3Cards-5 0 3 2 11 2 14 2 8 1 11 1 8 2 10 2 4 2 7 0 3 3 12 0 10 0-NPC_1 NPC_2 NPC_3 trung
+Send:SttPlay3Cards-12 0 14 2 11 2
+Send:SttPlay3Cards-12 0 14 2 11 2
+Receive:STTPlay-1-Exchange card-14 1 12 2 12 1
+Receive:Card played-2 1-1 0
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-14 1-2 0
+Receive:Card played-10 1-3 0
+Receive:Card played-9 1-3 0-None win points-1-1 0 2 1 3 2 0 3
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-3 3-1 0
+Receive:Card played-2 3-2 0
+Receive:Card played-10 3-3 0
+Receive:Card played-3 1-3 0-winpoint-2 3 3-2 0 3 1 0 2 1 3
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-13 1-1 0
+Receive:Card played-4 3-2 1
+Send:Card played-8 1
+Send:Card played-8 1
+Receive:Card played-3 3-3 1
+Receive:Card played-2 3-3 1-winpoint-0 3 3-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-2 0-1 1
+Receive:Card played-3 1-2 1
+Send:Card played-5 0
+Send:Card played-5 0
+Receive:Card played-8 1-3 1
+Receive:Card played-2 3-3 1-winpoint-0 3 1-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-5 2-1 1
+Receive:Card played-7 1-2 1
+Send:Card played-3 2
+Send:Card played-3 2
+Receive:Card played-14 1-3 1
+Receive:Card played-5 1-3 1-None win points-0-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-8 0-1 1
+Receive:Card played-14 2-2 1
+Send:Card played-5 0
+Send:Card played-5 0
+Receive:Card played-5 0-3 1
+Receive:Card played-11 0-3 1-None win points-3-3 0 0 1 1 2 2 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-3 0-1 1
+Receive:Card played-13 0-2 1
+Receive:Card played-4 0-3 1
+Send:Card played-5 0
+Send:Card played-5 0
+Receive:Card played-14 1-3 1-None win points-1-1 0 2 1 3 2 0 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-7 2-1 1
+Receive:Card played-14 2-2 1
+Send:Card played-3 2
+Send:Card played-3 2
+Receive:Card played-3 2-3 1
+Receive:Card played-11 0-3 1-None win points-1-1 0 2 1 3 2 0 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-11 2-1 1
+Send:Card played-3 2
+Send:Card played-3 2
+Receive:Card played-14 1-2 1
+Receive:Card played-2 2-3 1
+Receive:Card played-13 2-3 1-None win points-3-3 0 0 1 1 2 2 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-14 0-1 1
+Receive:Card played-14 2-2 1
+Send:Card played-5 0
+Send:Card played-5 0
+Receive:Card played-5 0-3 1
+Receive:Card played-11 0-3 1-None win points-0-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-12 3-1 1
+Receive:Card played-4 0-2 1
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-14 1-3 1
+Receive:Card played-3 0-3 1-winpoint-0 3 1-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-13 3-1 1
+Receive:Card played-14 2-2 1
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-5 0-3 1
+Receive:Card played-11 0-3 1-winpoint-0 3 1-0 0 1 1 2 2 3 3
+Send:Card played-14 1
+Send:Card played-14 1
+Receive:Card played-14 3-1 1
+Receive:Card played-4 0-2 1
+Send:Card played-3 3
+Send:Card played-3 3
+Receive:Card played-14 1-3 1
+Receive:Card played-11 0-3 1-winpoint-0 3 1-0 0 1 1 2 2 3 3
+Send:Card played-14 1

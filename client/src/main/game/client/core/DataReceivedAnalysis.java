@@ -12,7 +12,7 @@ public class DataReceivedAnalysis {
     
     public DataReceivedAnalysis(){}
     
-    private int login(String dataReceived) {
+    private int login(String dataReceived){
         if (dataReceived.contains("Duplicate username"))
             return -2;
         else if (dataReceived.contains("Welcome to Heart games"))
@@ -61,24 +61,25 @@ public class DataReceivedAnalysis {
     
     
     public int resultAfterAnalysis(String dataReceived) {
-        switch (state) {
-            case 0: {
-                return login(dataReceived);
+        if (dataReceived != null) {
+            switch (state) {
+                case 0: {
+                    return login(dataReceived);
+                }
+                case 1: {
+                    return waitngToDevideCard(dataReceived);
+                }
+                case 2: {
+                    return receive13Cards(dataReceived);
+                }
+                case 3: {
+                    return receiveSTTPlayAnd3Cards(dataReceived);
+                }
+                case 4: {
+                    return receivePlayedCard(dataReceived);
+                }
             }
-            case 1: {
-                return waitngToDevideCard(dataReceived);
-            }
-            case 2: {
-                return receive13Cards(dataReceived);
-            }
-            case 3: {
-                return receiveSTTPlayAnd3Cards(dataReceived);
-            }
-            case 4: {
-                return receivePlayedCard(dataReceived);
-            }
-            
         }
-        return -3;
+        return -10;
     }
 }

@@ -43,6 +43,7 @@ public class Solve {
     private String createCard_Process() {
         if (this.flag == OnlyReceiveServerFlag.ReceiveAccept) {
             Cards cards = new Cards(); // tao bo bai ./.
+            cards.setCards(cards.create52Cards());
             cards.setCards(cards.shuffleCards(cards.getCards())); // xao bai
             this.card_13 = cards.divideCards(cards.getCards()); // chia bai thanh 4 bo moi bo 13 la
             int str = cards.find2ClubIn4Cards(this.card_13);
@@ -208,9 +209,10 @@ public class Solve {
     
     public void reset() {
         try {
-            flag = OnlyReceiveServerFlag.ReceiveAccept;
-            exchangeCard = new ExchangeCard();
-            playedCard = new ArrayList<>();
+            this.flag = OnlyReceiveServerFlag.ReceiveAccept;
+            this.exchangeCard = new ExchangeCard();
+            this.playedCard = new ArrayList<>();
+            this.breakingHeart = 0;
             DataReceivedAnalysis.state = 0; // quay ve buoc cho nhan accept, nhung do ben RoutineServer se + them 1 nen ta set o day = 0
             
             this.exchangeCardTime += 1;

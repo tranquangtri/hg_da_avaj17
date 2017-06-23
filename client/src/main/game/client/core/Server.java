@@ -42,8 +42,9 @@ final public class Server {
         String ret = null;
         try {
             ret = reader.readLine();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new RuntimeException(e);
         }
         return ret;
     }
@@ -53,5 +54,9 @@ final public class Server {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public boolean isExist() {
+        return socket.isConnected();
     }
 }
