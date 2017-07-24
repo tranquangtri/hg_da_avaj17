@@ -21,10 +21,6 @@
  */
 package game.server;
 
-import game.server.entity.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class ClientSolve {
