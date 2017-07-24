@@ -62,21 +62,8 @@ public class ClientSolve {
     
     
     
-    public String exchnageCard() {
-        String data = "SttPlay3Cards-";
-        
-        for (int i = 0; i < 3; ++i) {
-            data += this.cardsExchange.getCards().get(i).getValue() + " " +
-                    this.cardsExchange.getCards().get(i).getType();
-            if (i != 2)
-                data += " ";
-        }
-        
-        return data;
-    }
-    
     public void sortCard(int  index) {
-        int N = this.cards.getCards().size() - 1;
+        int N = this.cards.getCards().size();
         for (int i = index; i < N; ++i)
             this.cards.getCards().set(i, this.cards.getCards().get(i + 1));
         this.cards.delete(N);
