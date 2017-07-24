@@ -56,10 +56,6 @@ public class ClientSolve {
         return this.cardsExchange;
     }
     
-    public Cards getCardsPlayed() {
-        return this.cardsPlayed;
-    }
-    
     public Card getCard(int index) {
         return this.cards.getCards().get(index);
     }
